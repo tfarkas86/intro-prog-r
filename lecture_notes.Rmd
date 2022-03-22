@@ -1,0 +1,1934 @@
+---
+title: 'Introduction to Programming in R (Biol 402/502): Lecture Notes'
+author: ''
+date: ''
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE, error=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 1: R Fundamentals
+
+##### Introduction to R Studio
+
+Panels and Tabs  
+
+* topleft: text editor
+* bottomleft: R Console
+* topright: History of Console and Environment contents (objects in memory)
+* bottomright: Plots, help files, etc.    
+    
+Ideally, never touch the mouse!  
+
+* <kbd>CTL</kbd> + <kbd>1</kbd> for Text Editor
+* <kbd>CTL</kbd> + <kbd>2</kbd> for Console
+* <kbd>CTL</kbd> + <kbd>3</kbd> for Help
+    
+R *per se* was also downloaded.
+
+##### Introduction to R Markdown 
+
+* Hash symbols create headings -- more hashes, smaller headings  
+* Asterisks make bulleted lists
+* Numbers "1." make numbered lists
+* 2 spaces makes a new line
+* surrounding single asterisks make *italics*
+* surrounding double askerisks make **bold**
+* surrounding ticks make R code, eg. `x <- 100`
+* three ticks make executed code chunks; use Insert from tool bar
+* run code in Console by highlighting and <kbd>CTL</kbd> + <kbd>RTN</kbd> 
+
+```{r}
+x <- 100; x
+```
+
+* `echo=FALSE` suppresses code
+
+```{r, echo=FALSE}
+x <- 100; x
+```
+
+##### Inroduction to R Console
+
+Exercise 1. Execute a few mathematical expressings, using `+`, `-`, `*`, `/`, `^`, `()`, and pressing <kbd>RTN</kbd>.
+
+Scroll through history with up arrow or look at History tab.
+
+Clear unexecuted code with <kbd>ESC</kbd>.  
+
+Clear console: <kbd>CTL</kbd> + <kbd>L</kbd>.
+
+Several expressions can be run on the same line seperated by `;`.
+
+##### Data Modes
+
+3 basic data storage modes:
+
+1. numeric - self explanatory ...
+2. character - use double quotes to create "strings" composed of "characters", eg `"Hello, World!"` and `"1776"`. Case sensitive! 
+3. logical - ie `TRUE` or `T` and `FALSE` or `F`
+
+##### Atomic Vectors
+
+1-dimensional "data structure" of a single data type 
+
+Combine objects with your first R "function": `c()`, eg `c(1, 2, 4)`.
+
+Generate integer sequences with `:`, eg `-5:5`.
+
+Exercise 2: Use `c()` and `:` to create:
+
+1. a numeric vector including -6, 6, and all integers between 10 and 150, inclusive.  
+2. Same as #1, but reverse the order of the integers between 10 and 150. Remember the up arrow! 
+
+Exercise 3: Use `c()` to create three character vectors that spell out "Hello, World!", one with a single element, one with two elements, and one with 12 elements.
+
+##### Data Coersion
+
+R attempts to "coerce" data types to allow function calls to execute.
+
+Exercise 4: Try using `c()` to combine: 
+
+1. numerics with logicals,   
+2. numerics with characters,   
+3. logicals with characters, and   
+4. all three data modes 
+
+Exercise 5: Predict the output of the following code: 
+
+1. `5 + TRUE`  
+2. `(F * 7) + (T * 2^2)`
+
+##### Error and Warning Messages
+
+Error messages indicate a function call has failed, and no object is returned.
+
+Warning messages indicate some object has been returned, but warns that the result may not be as expected.
+
+Exercise 6: Try  
+
+1. computing the sum of a numeric and a character,  
+2. creating vector of 3 characters, but accidentally omit one comma,
+3. compute the sum of 10 and 5, but accidentally include a space between 1 and 0  
+4. predicting the output of `3 + t * 2`
+
+##### Incomplete Function Calls
+
+Try creating a numeric vector with `c()`, but delete the closing parenthesis.
+
+Either finish the function call, or press <kbd>ESC</kbd>.
+
+##### Storing Objects to Memory
+
+Assign objects to variables names using the assignment operator `<-`, eg `x <- 100`, `treeData <- 1:10`.
+
+Variable names cannot begin with numbers, and can **only** include `.` and `_` as special characters.
+
+Variable names are case Sensitive!
+
+Access objects by calling their variable name.
+
+Exercise 7: Save the object returned by the following function call to some variable name: `rt(20, 20)`. Now print the object to the Console. 
+
+Exercise 8: Compute the product of 2 and 3 using the expression `x * y` and assign the resulting object to `p`. 
+
+Exercise 9. Combine the character objects "Hello," and "World!" using this expression: `c(hel, wor)`, and assign the resulting object to `hello!`.
+
+##### Interacting with Memory
+
+View all objects stored to memory (for now, the "Global Environment") in the Environment tab.
+
+Create a character vector of names for all objects in the global environment (GE) using `ls()`. 
+
+Remove objects from the GE by calling `rm()` on object names, eg `rm(x)`.
+
+##### Characterizing Vectors
+
+Use `length()` to view the number of elements in a vector. 
+
+Use `mode()` to view the data storage mode of a vector.
+
+Exercise 10: Predict the output of the following code chunks:
+
+1. `length(283074)`  
+2. `length(c(2, 8, 3, 0, 7, 4))`  
+3. `x <- 0:10; y <- c("Hello, ", "World!"); length(x) + length(y)`
+
+Exercise 11: Predict the output of the following code:
+
+1. `mode(c(T, FALSE, T, TRUE))`  
+2. `mode(c(1, 5, F, 7, 583, T))`  
+3. `mode(c("a", "b", 1, 2))`  
+4. `a <- 5; b <- 7; mode(c(a, b, 1, 2))` 
+
+## Week 2: R Fundamentals II
+
+##### Data Types: Integers and Doubles
+
+Data "types" are similar to data storage "modes", but most importantly can distinguish **integer** data from **double** (aka "float") numerics.
+
+**Integer** data take up less memory, but have a very low maximum value of 2,147,483,647.
+
+Specify integers, use integer generators, eg `1:10`, or with the syntax `1986L`.
+
+**Double** data are default numerics, take up more memory, but have a very high maximum of 1.7977e+308.
+
+Specify large or small doubles with `e` notation: `1986e-3`.
+
+Addition, subtraction, and multiplication with integers returns integer data. All other mathematical functions yield doubles.
+
+`typeof()` returns a character vector indicating an object's type.
+
+Excercise 2.1: Predict the objects returned:
+
+1. `typeof(1:5)`
+2. `typeof(c(1,  2,  3,  4,  5 ))`
+3. `typeof(c(1L, 2L, 3L, 4L, 5L))`
+4. `typeof(c(1L, 2L, 3L, 4L, 5 ))`
+5. `typeof(c(1:10, 100))`
+6. `typeof((2L * 1L))`
+7. `typeof((2L / 1L))`
+8. `typeof(length(c(1,2,3)))`
+
+##### Special Values
+
+`NA` represents missing values and can be of any data type, default logical.
+
+Double-type values:
+
+1. `NaN` (not a number) is returned for undefined mathematical expressions (eg. `0/0`)
+2. `Inf` and `-Inf` represent infinity
+
+`NULL` represents the null object -- not "missing", but "nothing".
+
+Exercise 2.2: Predict the objects returned:
+
+1. `typeof(c(NA, NA, NA, NA))`
+2. `typeof(c(NA, NA, NA, 1L))`
+3. `-1986 / 0`
+4. `c(1, 2, 3, NA, NULL)`
+
+##### Relational Operators
+
+Compare object values with `==`, `>`, `<`, `>=`, `<=`, and `!=`.
+
+Take data of any mode, and return logical. 
+
+Exercise 12: Predict the output of the following code:  
+
+1. `1 < 2`  
+2. `"a" > "b"`  
+3. `0 == FALSE`  
+4. `0 == FALSE == 1`  
+5. `(0 == FALSE) == 1`  
+
+`any()` tests whether at least one value in a logical vector is `TRUE`. 
+
+`all()` tests whether all values in a logical vector are `TRUE`.
+
+`identical()` tests whether two objects are exactly equal.
+
+##### Logical Operators
+
+Use `&` ("AND") and `|` ("OR") to evaluate logical queries.  
+
+Work on logical and return logical
+
+Late in precedence of operations: `?Syntax`
+
+`x & y` will evaluate `TRUE` only if both `x` AND `y` evaluate to `TRUE`.
+
+`x | y` will evaluate `TRUE` if either `x` OR `y` evaluate to `TRUE`.
+
+Exercise 13. Given `x <- 1` and `y <- 2`, predict the output of the following expressions:  
+
+1. `TRUE & FALSE`  
+2. `TRUE | FALSE`  
+3. `FALSE | TRUE` 
+4. `x >= 1 | FALSE`  
+5. `y > 2 & x == 1`  
+6. `(y > 2) & (x == 1)`
+7. `x == 1 & y == 1 | x == 1`    
+
+`!` is logical negation, syntactically unrelated to `!=`.  
+
+Exercise 15: Predict the output:   
+
+1. `!TRUE`  
+2. `!FALSE | TRUE`  
+3. `!(FALSE | TRUE)`
+
+0 and negative numbers coerced to FALSE, 1 and positives coerced to TRUE.
+
+Exercise 16: Predict the output:  
+
+1. `TRUE & 1`  
+2. `FALSE | "a"`  
+3. `FALSE | 3`  
+4. `1 > 3 | 3`  
+5. `1 > (3 | 3)`
+
+##### Operations on Vectors
+
+Operations will iterate through the elements of the vectors on which they are used, "elementwise evaluation". 
+
+Exercise 17: Given `x <- 1:10; y <- 2:11`, predict the output of the following code:  
+
+1. `x - 1`  
+2. `x ^ 2`  
+3. `x + y`  
+4. `x == 4`  
+5. `y >= 5`  
+6. `sum(2, x)`
+
+If vector lengths differ, the shorter vector is "recycled" to continue operations on the longer vector. 
+
+Exercise 18: Given `x <- 1:10`, predict the output:   
+
+1. `x + 1:2`  
+2. `x == c(1,2)`  
+3. `x == c(2, 3, 3, 4, 5)`  
+4. `x + 1:3`  
+
+##### Making Function Calls
+
+Use `?` to view the help file for any function, eg `?log`.
+
+For operators (hereafer "infix functions"), enclose in ticks: "?`+`"
+
+Function calls take "arguments", seperated by commas.
+
+Many arguments have defaults -- see the Usage section of the help file.
+
+Named arguments can be specified explicitly using `=`, and can be "matched" using partial names, or argument position without names. 
+
+Exercise 19: Predict the output of the following code:  
+
+1. `log(x=100, base=10)`  
+2. `log(100, base=10)`   
+3. `log(100, b=10)`  
+4. `log(base=10, 100)`  
+5. `log(100, 10)`  
+6. Which do you prefer?
+
+`...` indicates unnamed arguments of unlimited quantity, see `?c` and `?rm`.
+
+Exercise 20: Make sure at least three vector objects are stored in the GE, eg `x <- 1; y <- "a"; z <- TRUE`. Using a *single call* to `rm()`, remove all elements from the GE:  
+
+1. using only the `...` argument  
+2. using the `list` argument and `c()`  
+3. using the `list` argment and `ls()`
+
+##### Advanced Vector Construction
+
+Use `seq()` to make complex, but regular sequences of numeric elements.
+
+Exercise 21: Using `seq()`, create a numeric vector from 0 to 100 that:
+
+1. increments by exactly 0.25   
+2. has 17 elements  
+3. both increments by 0.25 and has 17 elements  
+4. increments by 11  
+5. increments by 11, but in reverse order  
+
+Use `rep()` to create a vector of repeated elements.
+
+Exercise 22: Using a single call to `rep()`, create a character vector with:
+
+1. "a" repeated 10 times.  
+2. "a" and "b" each repeated 10 times, alternating. Do this twice, once using `times` and once using `length.out`.  
+3. "a" repeated 10 times followed by "b" repeated 10 times.   
+
+Use `rev()` to reverse the order of a vector. 
+
+Exercise 23: Predict the output of 
+
+1. `rev(rep(1:5, 2))`
+2. `rep(rev(1:5), 2)`
+3. `rep(1:5, length.out = 2)`
+4. `rep(1:5, each = 2)`
+
+Give the elements of vectors "names" either: 
+
+1. inside `c()`, eg. `c(e1="a", e2="b", e3="c")`, or
+2. using `names()`, eg. `x <- 1:3; names(x) <- c("e1", "e2", "e3")`
+
+Return a character vector of names by calling `names()`.
+
+## Week 3: R Fundamentals III and Advanced Data Structures I
+
+##### Indexing and Modifying Vectors
+
+Square brackets (eg. `x[ ]`) can be use with a vector `x` to:
+
+1. extract elements of `x`, 
+2. exclude elements of `x`, 
+3. replace existing elements of `x` with new values, 
+4. add new elements to `x`.
+
+Extract elements of existing vectors using `[ ]` and either:  
+
+1. an integer vector of element positions, eg `x <- 0:9; x[2]; x[2:4]`,   
+2. a logical vector (recycling applies), or   
+3. a character vector of element names, eg. `x[c("e1", "e2")]`
+
+Exclude elements from a vector with negative position numbers, eg `x[-2]`
+
+Replace elements of vectors using `<-`, eg `x[2] <- 500`
+
+Add elements of a vector with new indices, names, or logical vectors:
+
+```{r, }
+x <- 0:10; x
+x[12] <- 500; x
+x["new.elmnt"] <- 501; x
+```
+
+Exercise 24: Given `x <- -5:5`, use a numeric vector to return a vector containing the first, sixth, and eleventh elements of the vector `x`.
+
+Exercise 25: Given `x <- c(e1="a", e2="b", e3="c", b="d")`, create a vector:
+
+1. containing only the second element of x: once using positive integers, again using a logical vector, and a third time using character strings. 
+2. containing the first and second elements of x, extracting them by name.
+3. containing the first and third elements of x, using a logical vector of length =  2.
+
+Exercise 26: Given `x <- -5:5`, use `[ ]` to: 
+
+1. *exclude* the first, sixth, and eleventh elements  
+2. same as 1, but by calling `x[y]`  
+3. same as 1, but by calling `x[-y]`  
+
+Exercise 27: Given `x <- 0:10`, 
+
+1. replace the first 5 elements of `x` with the integers from 2 to 6.
+2. replace the 5th, 6th, and 11th element with missing values.
+3. predict: `x[c(TRUE, FALSE)] <- c(TRUE, FALSE)` 
+4. predict: `x[c(TRUE, FALSE)] <- c(1:4)`
+1. predict: `x[100] <- "oops"`, 
+2. predict: `x[1:101]`
+
+##### Indexing with Logical Vectors
+
+Use combinations of relational and logical operators in square brackets. 
+
+```{r}
+x <- 1:10; x
+x > 5
+x[x > 5]
+```
+Exercise 28: Given `x <- 0:10` create a subset of `x`:
+
+1. including only those values less than 10,
+2. incuding only those values exactly equal to 3, 
+3. excluding all values exactly equal to 3,
+4. including values either less than 2 or greater than 4,
+5. including values equal to 1 and values equal to 10
+
+Exercise 29: *Using a vector of position numbers in square brackets* (and the function `c()` only), create a subset of `x` including only those elements less than 0: 
+
+1. Given `x <- rnorm(10)`, 
+2. Given `x <- rnorm(1000)`.
+
+##### Lists
+
+**Lists** are 1D data structures (ie vectors) for which the elements need not be of the same data type, length, or dimensionality.
+
+`list()` combines elements of a list, as with `c()` for atomic vectors, eg `list(1:10, "a", c(TRUE, FALSE), NULL, NA)`
+
+Name list elements as with atomic vectors -- much more useful!
+
+Index lists as with atomic vectors, except:
+
+1. Use single brackets `[]` to retrieve a "slice" of list -- object returned will be a list containing indexed elements
+2. Use double brackets `[[]]` to retrieve the list "member" -- object returned will be of whatever data structure is copied under the list element
+3. Use `$` and element name without quotes to access elements by name, eg `mylist$var1` -- object returned is list member (like double brackets), not slice.
+
+Add elements to a list as with atomic vectors, eg. `x$newvar <- 1:10; x[10] <- "new"`.
+
+Exercise 30: Given the list `x`:
+
+```{r}
+x <- list(nums=1:10, logs=c(TRUE, FALSE), char="a", null=NULL, msng=NA)
+```
+
+1. Return a list containing only the vector named `logs`.
+
+```{r}
+x["logs"]
+```
+
+2. Return a logical vector of the elements in `logs`. Do this once with `$` and once with square brackets.
+
+```{r}
+x$logs
+x[["logs"]]
+```
+
+3. Predict the object returned by `x[1]`.
+4. Predict the object returned by `x[1][1]`.
+5. Predict the object returned by `x[1][1][1][1][1][1][1][1]`
+6. Predict the object returned by `x[[1]][1]`.
+7. Return a list with two elements, which are copies of the vectors named `nums` and `msng`.
+
+```{r}
+x[c("nums", "msng")]
+```
+
+8. Using `$`, return the second element in the logical vector named `logs`.
+
+```{r}
+x[["logs"]][2]
+```
+
+9. Predict outcome of `x[10] <- 1:100`
+
+## Week 4: Advanced Data Structures
+
+##### Arrays and Matrices
+
+** Arrays** are n-dimensional objects of a single data type (ie atomic), and must be n-dimensionally rectangular.
+
+**Matrices** are 2-dimensional special cases of arrays.
+
+Use `array()` and `matrix()`, passing as arguments an atomic vector as data, and dimensions. Default is to fill by column, recycling applies.
+
+1st dimension always rows, 2nd always columns.
+
+```{r}
+?matrix
+x <- matrix(1:10, nrow=5, ncol=2); x
+x <- matrix(1:10, nrow=5, byrow=TRUE); x
+
+y <- array(1:8, dim = c(2, 2, 2)); y
+```
+
+Use `dimnames()`, `colnames()`, or `rownames()` to determine or change names of rows, columns, etc. `dimnames()` must be a list.
+
+```{r}
+?dimnames
+dns <- list(c("row1", "row2", "row3", "row4", "row5"),
+            c("col1", "col2")); dns
+dimnames(x) <- dns; x
+```
+
+Index using `[ ]` with commas to separate dimensions: eg `x[1, 2]`. 
+
+Leave a dimension blank to extract all its elements, eg `x[ , 2]`.
+
+Data coerced to lowest possible dimension, unless `drop = FALSE`.
+
+```{r}
+x[, 2]
+x[, 2, drop=FALSE]
+```
+
+Use `rbind()` to combine rows of matrices, and `cbind()` to combine columns.
+
+```{r}
+rbind(x, x)
+```
+Use `dim()`, `nrow()`, and `ncol()` to determine dimension lengths. 
+
+Use `colSums()`, `rowSums()`, `colMeans()`, and `rowMeans()` to efficiently calculate sums or means for all rows or columns. 
+
+Many matrix manipulation and algebraic functions are supported: see `t()`, `diag()`, `%*%`, and others.
+
+Exercise 31. Create matrices containing the integers 1 through 24:
+
+1. `x`: 8 x 3 (8 rows)
+2. `y`: 6 x 4
+3. `z`: 1 x 24
+
+```{r}
+y <- matrix(1:24, nrow=6); y
+
+```
+
+
+Exercise 32. Using `y` in problem 2 above:
+
+1. extract the element in the 2nd row, 2nd column 
+2. extract all elements in column 2, returning a matrix
+3. extract the elments in columns 2 and 4
+4. extract the elements less than or equal to 5,
+5. make a 12-by-4 matrix (12 rows) `y` by combining `y` with itself.
+6. transpose `y`
+7. name the rows and columns of `y` as you see fit. I recommend using `LETTERS`.
+
+```{r}
+y[2, 2]
+y[ , 2, drop=FALSE]
+y[ , c(2, 4)]; names(y); 1:100
+y[y <= 5]
+rbind(y, y); cbind(y, y)
+t(y)
+rownames(y) <- LETTERS[1:6]
+```
+
+Exercise 33: Given `p <- matrix(1:9, nrow=3)`, predict:
+
+01. `p + 1`
+02. `p * 2`
+03. `p * p`
+04. `p[ , 1] ^ 2`
+05. `t(p)`
+06. `diag(p) <- 1:3; p`
+07. `1:3 %*% p`
+08. `p[]`
+09. `p[2]`
+10. `p[,]`
+11. `p[,,]`
+
+Bonus Exercise 34: Using the named matrix `x` below:
+
+```{r}
+x <- matrix(1:10, nrow=5, byrow=TRUE, dimnames = list(c("row1", "row2", "row3", "row4", "row5"), c("col1", "col2")))
+
+```
+
+1. Extract the number 1 using position numbers, and again using names.
+2. Extract the number 7 using position numbers, and again using names.
+3. Extract all the elements in the second row of both columns, using position numbers. 
+4. Extract the elements from the 1st, 3rd, and 5th row from the first column only, using position numbers. 
+5. Extract the elements from the 2nd row, 2nd column, using logical vectors.
+6. Extract all elements from `x` that are greater than or equal to 3.
+7. Extract all rows from `x` (both columns), for which the values in the first colunm are greater than or equal to 3. Use either position numbers or row/column names.
+8. Extract all columns from `x` for which the element in the first row is divisible by 2. See see "?`%%`".
+
+##### Factors
+
+Factors are atomic vectors with restricted, prespecified values, stored internally as integer data, but presented as character data.
+
+Create with `factor()`, eg. `x <- factor(c(rep("a", 2), rep("b", 2)))`
+
+Show level names with `levels()`, and number of levels with `nlevels()`.
+
+Exercise 35: Given `x <- factor(c(rep("a", 2), rep("b", 2)))`, predict
+
+1. `nlevels(x)`
+2. `x[5] <- "a"; x`
+3. `x[6] <- "c"`
+4. `c(x, "a")`
+
+##### Data Frames
+
+Data frames are lists for which each element is an atomic vector of the same length. 
+
+* Create with `data.frame()`, eg `dd <- data.frame(id=rep(LETTERS[1:5], each=2), val=rnorm(10))`
+* Data frames are presented visually as named matrices
+* `rownames` set by default to row number upon creation 
+* `colnames` set by default to variable name
+* Character vectors coerced to factors by default (`dd$id`), unless `as.is=TRUE`
+* Combine data frames as with matrices: `cbind()`, `rbind()`
+* Create new named columns directly as with lists, eg `dd$newvar <- rpois(10, 5)`
+
+Index data frames as with either lists or matrices.
+
+* Extract columns or rows as with matrices, using `dd[rows, columns]` with indices, names, or logicals
+* Extract single columns using `$`, eg `dd$id`
+* Single brackets will return data frame, double will return atomic vector
+* Use TAB autocomplete to navigate through data frames
+
+Exercise 34: Given the data frame `x <- data.frame(id=rep(LETTERS[1:5], each=2), val=rnorm(10))`:
+
+1. Create a numeric vector of variable `val` using three distinct indexing approaches.
+2. Create a numeric vector of variable `val`, but including only elements less than zero.
+3. Create a new data frame `z`, swapping the order of columns `id` and `val`
+4. Create a new data frame `p`, duplicating `id` and appending it to itself as new rows.
+5. Extract those rows from `id` (both columns) for which the value of `val` is greater than 0.
+6. Extract elements from vals for which `id` = "A", "C", and "E" only.
+
+Bonus Exercise 35: Many data sets are preloaded into R for you. Take a look at the `iris` data set.
+
+1. Print to the Console all the measurements of Iris setosa sepal width.
+2. Make a histogram of Iris setosa petal width. (see `?hist`) Include argument `xlim = c(0, 3)`.
+3. Make a vector `qts` including the 0.05 and 0.95 quantiles of setosa petal width. See `?quantile`.
+4. Draw vertical lines indicating the location of the mean sepal width for each of the three Iris species. Use different color lines to differentiate.  
+
+## Week 5
+
+##### Evaluating Data Structures
+
+Use `str()` to determine characteristics, attributes, and see some contents.
+
+```{r}
+dd <- data.frame(a=LETTERS[1:10], b=rnorm(10))
+str(dd)
+```
+Use `head()` to see the first elements (default = 6) of any data structure, eg `head(dd)`.
+
+Use `class()` to determine the data structure, eg `class(dd)`.
+
+Determine which rows have no missing values (`NA`) with `complete.cases()`.
+
+Determine whether an object is a specific data structure using `is.` functions, eg. `is.data.frame(dd); is.list(dd); is.vector(dd); is.matrix(dd)`.
+
+`is.` functions are also defined for various data types, eg. `is.numeric(dd$b)`
+
+Force coersion of data structures or types using `as.` functions, eg `as.vector(dd); as.character(dd$b)`
+
+##### Data Input/Output
+
+Create data.frame from table-like files using `read.table()` generally, or `read.csv()` for CSV files (recommended). 
+
+Either set your working directory using `set.wd()`, Session menu, or Files Tab, or specify the entire path to your file (recommended). Use TAB autocomplete to navigate your system folders, copy path as text (PC: in right-click menu; Mac: right-click menu + <kbd>OPT</kbd>), or use `file.choose()`.
+
+Mac example: `dd <- read.csv("~/Projects/Sevilleta/plant_traits.csv")`
+PC example:  `dd <- read.csv("c:/Projects/windows_data.csv")`
+
+Default with `read.csv()` is to use the first row as column names (`header = TRUE`). 
+
+Data frame will convert all character data to factors, unless `as.is = TRUE`.
+
+"NA" in data will be interpreted as `NA`, as will empty cells (but not for character vectors). Set `NA` coercion with `na.strings` argument.
+
+Set up spreadsheets in MS Excel (or your choice of program) with short, descriptive headers without spaces, seperated by either `_` or `.`. 
+
+Exercise 36: Download `tstCSV.xslx` from Blackboard, modify the file for import into R, import and save to `dd`, then make sure the data frame is how you want it to be. Modify the file and reimport if necessary. Remove all rows with missing values using `complete.cases()`.
+
+```{r}
+dd <- read.csv("~/Dropbox/UNM R Course/testCSV2.csv")
+dd[complete.cases(dd), ]
+```
+
+Use `write.csv()` to save a data frame as a CSV file. Set `row.names = FALSE` to avoid reproducing row names.
+
+Use `save()` to save an R object as an .RData file. Use `load()` to move it to your global environment. Useful for huge objects that take a long time to create.
+
+Use `save.image()` to save entire workspace (all object in GE). Use `load()` to reload.
+
+##### Review Exercises
+
+Exercise 37. Given `dd` above:
+
+01. name the columns `id`, `msr1`, `site` and `count`.
+02. extract the `msr1` column
+03. extract the tenth row, and save to `r10`
+04. determine the type of data structure saved to `r10`
+05. extract the first 10 values from `msr1`
+06. replace the frist 10 values of the `count` column with ten consecutive integers starting at 95.
+07. save the number of rows in `dd` to `len`
+08. make a new column `msr2` which is a numeric sequence of numbers beginning at 0 and incrementing by 0.5
+09. extract all values from `msr1` less than 1
+10. extract all values from `msr1` less than its mean
+11. extract all rows for which `msr1` is less than its mean
+12. extract all rows for which `site` is "J"
+13. change the value of `msr1` to 0 for those rows in which `site` is "J"
+14. extract all values from `msr1` less than -1 or greater than 1
+15. extract all values of `count` for which `msr1` is less than -1 or greater than 1
+16. make a new column `msr1.c` that centers `msr1` on its mean (`msr1.c` is 0 when `msr1` is at the mean of `msr1`)
+17. make a new column `msr1.c.sq` that takes the square of each element in `msr1.c`
+18. remove the `id` column from dd, and simultanesouly (with one call) reorder the columns so that `site` and `count` are in the 1st and 2nd positions, followed by `msr1`, `msr1.c`, `msr1.c.sq`, and `msr2`.
+19. extract the row for which the mean of all the measurements (excluding `site` and `id`) is smallest. see `?min`.
+
+## Week 6
+
+##### Installing R Packages
+
+Install a new package on your computer with `install.packages()`.
+
+Load an installed package with `library()`, eg. `library(reshape)`.
+
+```{r}
+#install.packages("reshape")
+library(reshape)
+```
+
+##### Data Manipulation
+
+```{r}
+dd2 <- data.frame(id=factor(1:20), rep=LETTERS[sample(1:5, 20, replace=TRUE)],
+                 site=gl(n = 2, k = 10, length = 20, labels = c("a", "b")),
+                 val1=rnorm(20), val2=rnorm(20, 100))
+```
+`intersect()` returns the elements of two vectors that are equal, eg. `intersect(dd2$rep, LETTERS)`. 
+
+`union()` returns all unique elements in two sets, eg. `union(1:10, 5:15)`.
+
+`setdiff()` returns the elements in `x` not in `y`, eg `setdiff(dd2$rep, LETTERS); setdiff(LETTERS, dd2$rep)`.
+
+`match()` indicates the position of first match for elements of first argument in second.
+
+```{r}
+LETTERS; dd2$rep
+match(dd2$rep, LETTERS)
+match(LETTERS, dd2$rep)
+```
+
+`%in%` returns a logical vector indicating whether the elements of the left-hand argument are found **in** the right-hand argument, eg `LETTERS %in% dd2$rep`.
+
+`which()` returns an integer vector indicating the indices of `TRUE` values in a logical vector, or array positions if `arr.ind = TRUE`.
+
+```{r}
+which(dd2$rep == "A")
+```
+`rank()` returns rank number of each element, eg `rank(dd2$val1)`.
+
+`order()` shows the alphanumeric order of values in supplied vector, whereby values returned are indices of supplied vector matched with the index of returned vector. Eg. If value in first position of returned vector is 10, the 10th element in the supplied vector has lowest alphanumeric value. Breaks ties with extra vectors. Use to sort a data frame.
+
+```{r}
+order(dd2$val1)
+order(dd2$rep, dd2$val1)
+```
+
+`sort()` sorts a vector, eg `sort(dd2$val1)`. Default `decreasing = FALSE`.
+
+Exercise 38. 
+
+1. Given the rep names `x <- c("A", "site1", "WCC", "01", "J", "site2", "C")` return all rows of `dd2` for which `rep` is included in `x`.
+2. Use `order()` to sort the rows of `dd2` by `val1`.
+3. Sort the rows of `dd2` first by `rep`, then by `val1` to break ties.
+4. Use `sort()` and `match()` to sort the rows of `dd2` by `val1`
+5. Same as 4, but use `rank()` and `match()`, and overwrite `dd2` with the sorted data frame.
+6. Export `dd2` as a CSV file.
+
+```{r}
+dd2[dd2$rep %in% x, ]
+dd2[order(dd2$val1), ]
+dd2[order(dd2$rep, dd2$val1), ]
+dd2[match(sort(dd2$val1), dd2$val1), ]
+dd2 <- dd2[match(1:20, rank(dd2$val1)), ]
+# write.csv("FILENAME.csv", dd2)
+```
+
+`stack()` lengthens lists or data frames by concatenating all non-factor list elements (or data frame columns) into a single vector, and returns a new list (or data frame) with the concatenated vector (`values`) and an indicator of the original element or column (`ind`). 
+
+```{r}
+sdd2 <- stack(dd2, select = c("val1", "val2"))
+unstack(sdd2, form = values ~ ind)
+```
+
+Use `melt()` to stack, and `cast()` to unstack, preserving ID variables. From `reshape` package. Cannot cast unless ID variables in combination yield unique records.
+
+```{r}
+mdd2 <- melt(dd2, 
+             id.vars = c("id", "rep", "site"), 
+             measure.vars=c("val1", "val2"))
+cdd2 <- cast(mdd2, form = id + site ~ variable)
+cdd2 <- cast(mdd2, form = ... ~ variable)
+cast(mdd2)
+```
+
+Consider also using `reshape()` from the base package, if you dare.
+
+`split()` splits a data frame into a list of data frames given a splitting factor. `unsplit()` recombines list elements into a data frame, given same splitting factor. 
+
+```{r}
+iris.l <- split(x = iris, f = iris$Species)
+unsplit(iris.l, f = iris$Species)
+```
+
+Exercise 39: 
+
+1. Use `rnorm()` to create a new column of data in `dd2` called `var3`.
+2. Use `stack` to create a new data frame `dd2.s` that stacks all three `var` variables. 
+3. Add the `rep` and `site` variables to `dd2.s`.
+4. Use `unstack` to reverse the process. 
+5. Use `melt()` and `cast()` to repeat 2-4, including the `id` column in #3.
+6. Use `melt()` to create long-format data from `dd2` with only `id` and `rep` as an identifying variables, and `val1` and `val2` as measures.
+7. Use `cast()` to recreate wide-format, keeping only `id` as an identifier variable. 
+
+Exercise 40:
+
+1. Split `dd2` into a list named `dd2.l` by `site`.
+
+Use `dd2.l` to: 
+2. extract the elements `val2` for which `site` is "a".
+3. extract the elements of `val2` at site "a" that are less than 100.
+4. extract all rows of `dd2` for which `val2` is less than 100 and site is "a".
+
+5. Recombine the elements of `dd2.l` into a single data frame.
+6. Remove the first row of the first element in `dd2.l`.
+7. Recombine it into a single data frame. 
+
+## Week 7: Functions & Control Flow Part 1 (If/Else)
+
+##### Curly Braces
+
+Use `{}` group expressions so that they are evaluated together, rather than line by line. Only the last evaluated expression is returned.
+
+```{r}
+{
+  
+  x <- 2; x
+  y <- 3; y
+  z <- 4; z
+  
+}
+
+x
+y
+z
+
+obj <- { # get cube of square of x = 2
+  
+  x <- 2
+  y <- x ^ 2
+  z <- y ^ 3
+  
+}
+
+obj <- 2; 4; 5
+obj <- {2; 4; 5}
+
+```
+
+Use `print()` to print things to the Console that otherwise would not.
+
+```{r}
+{
+  x <- 2; print(x)
+  y <- 3; y
+  z <- 4; z
+}
+```
+
+##### User-Defined Functions
+
+Create your own functions with the `function()` function. 
+
+Put arguments, with or without defaults, as arguments to `function()`, then put function body in curly braces (or inline for single statements). The last evaluated statement is returned (because curly braces!)
+
+```{r}
+myfun <- function(x, add=2) {
+  
+  x2 <- x ^ 2
+  list(x2 + add, x2 + add + 1)
+  x3 <- x2 + add
+  x4 <- x2 + add + 1
+  
+}
+
+myfun2 <- function(x, add=2) (x ^ 3) + add
+```
+
+Use `return()` to return the object passed as argument and terminate the function call.
+
+Make "anonymous" (unnamed) functions inside other functions.
+
+Use `aggregate()` to apply a function to data split by a factor (provided as a list)
+
+```{r}
+aggregate(iris$Sepal.Length, by=list(iris$Species), FUN=mean)
+aggregate(iris$Sepal.Length, by=list(iris$Species), FUN=function(x) {
+  mean(x) + 2
+})
+aggregate(iris$Sepal.Length, by=list(iris$Species), FUN=function(x) mean(x) + 2)
+```
+
+Exercise 39: 
+
+1. Create a function `max.c` that centers any vector of numbers on their maximum
+2. Create a function `se` for the standard error (standard deviation / square root of sample size - 1)
+3. Use aggregate to calculate the coefficient of variation for `val1` for each site in `dd2`.
+4. Create a function `scl` that scales all elements in a numeric vector between 0 and 1. 
+
+```{r}
+max.c <- function(x) x - max(x); max.c(1:100) #1
+se <- function(x) sd(x) / (length(x) - 1); se(rnorm(100)) #2
+aggregate(dd2$val1, by=list(dd2$site), 
+          FUN=function(x) sd(x)/mean(x)) #3
+scl <- function(x) (x - min(x)) / (max(x)-min(x)) #4
+```
+
+##### Conditional Statements: If/Else
+
+Use `if()` to evaluate expressions IFF argument evaluates to `TRUE`. Use curly braces `}` to enclose multiple lines of code.
+
+```{r}
+x <- 10
+if(x == 10) x
+if(x < 10) x + 1
+if(x  > 10) x - 1
+
+if(x == 10) {
+  
+  x2 <- x ^ 2
+  x2
+  
+}
+```
+
+Use `else` to evaluate an alternate statement IFF prior condition is `FALSE`. Must occur on same line as `if()` expression, or same line as closing braces `}`, *unless* the entire if/else construct is itself enclosed in curly braces (due to parent if/else, function, or loop). Use curly braces to enclose multiple lines of code.
+
+```{r}
+if(x < 10) x else x ^ 2 # else on same line as `if`
+
+if(x > 10) {
+  
+  x <- 6
+  x
+  
+} else x ^ 2 # else on same line as closing curly brace
+
+
+{ # effect of enclosing curly braces
+ 
+  if(x > 10) {
+    x <- 6
+    print(x)
+  } 
+  else x <- 3
+  
+}
+```
+
+Nest if/else statments to decend through a list of conditions.
+
+```{r}
+if(x < 10) {
+  
+  x - 1
+  
+} else if(x > 10) {
+   
+  x + 1
+  
+} else if(x == 10) {
+  
+  x
+  
+} else "something is wrong ..."
+
+```
+
+Exercise 40: Make a function `first.pos` that takes a numeric vector `x` and determines whether the first element is positive. It should return the character strings "first element is positive" or "first element is negative". Use the if/else construct. Test your function!
+
+Exercise 41. Modify `first.pos` to return "first element is 0", if the first element is 0.
+
+Exercise 42. Modify `first.pos` to return "first element is not numeric", if the first element is not numeric.
+
+```{r Exercises 40-42}
+
+first.pos <- function(x) {
+  
+  fe <- x[1]
+  
+  if(!is.numeric(fe)) return("first element is not numeric")
+  
+       if(fe < 0)  "first element is negative"
+  else if(fe == 0) "first element is zero"
+  else if(fe > 0)  "first element is positive"
+  
+}
+
+first.pos(x=1)
+```
+
+Bonus: Modify `first.pos` to allow testing of logical vectors, so `FALSE` will be coerced to zero, and `TRUE` to 1, but report to the user that the first element is logical. 
+
+`switch()` takes as arguments a named list of objects (`...`) and either a character  or integer of length == 1, and returns the matched object in the list. Faster and more concise then nested if/else statements.
+
+```{r}
+switch(2, first = "a", second = "b", third = "c")
+switch("second", first = "a", second = "b", third = "c")
+```
+
+Use `ifelse()` with a logical vector or matrix (or array), to return a single object of the same length (or shape). Recycling of `yes` and `no` arguments applies if shorter than `test` argument. Use to return stuff, not to do stuff. Go ahead and nest them!
+
+```{r}
+ifelse(x == 10, "is ten", "is not ten")
+
+y <- c(-1, 1)
+ifelse(y < 0, c(1, 2), c(3, 4))
+ifelse(y < 2, 1, 2) # recycling of yes and no
+
+z <- c(-5:5)
+ifelse(z < 0, -z, z)
+
+```
+
+Exercise 43. Create a function `my.sum` that takes a numeric vector `x` and a character vector `type`. The function should return the mean, median, variance, or standard deviation of `x` based on the input of `type`. Type should default to "mean", and the function should alert the user if `x` is not numeric. Use `switch()` for this exercise. For bonus, have `my.sum` return a named vector, indicating the summary statistic calculated. 
+
+Exercise 44. Given `aq <- airquality`:
+
+1. Create a vector with two levels ("missing" and "not missing"), indicating whether the elements in the `Solar.R` variable are missing. Use `ifelse()`. Remember `is.na()`.
+
+2. Create a factor with three levels ("missing", "high", and "low"), indicating whether the elements in `Solar.R` are missing, above the mean, or below the mean. See `na.rm` argument to `mean()`.
+
+3. Change all missing values from the `Ozone` variable in `aq` to `-1`. Use standard indexing techniques only. 
+
+4. Same as #3, but use `ifelse()`.
+
+5. Create a vector whose elements indicate `Ozone` values if the corresponding value of `Wind` is greater than the mean (of `Wind`), and `Solar.R` values if `Wind` is less than the mean (of `Wind`)
+
+```{r Exercise 44}
+aq <- airquality
+ifelse(is.na(aq$Solar.R), "missing", "not missing") #1
+ifelse(is.na(aq$Solar.R), "missing", ifelse(aq$Solar.R <= mean(aq$Solar.R, na.rm = TRUE), "low", "high")) #2
+aq$Ozone[is.na(aq$Ozone)] <- -1 #3
+aq$Ozone <- ifelse(is.na(aq$Ozone), -1, aq$Ozone) #4
+ifelse(aq$Wind > mean(aq$Wind, na.rm=TRUE), aq$Ozone, aq$Solar.R) #5
+```
+
+## Week 8: Iteratively Executing Code -- Loops!
+
+##### for() and while() Loops
+
+Use `for()` function, and pass a vector (atomic or list) of elements to be assigned to a variable (traditionally `i`), and execute loop body once for each value of `i`. Use following syntax, and use curly braces to group lines of code. 
+
+```{r}
+for(i in 1:10) print(i)
+
+for(i in 1:10) {
+  
+  x <- i ^ 2
+  print(x)
+  
+}
+
+for(i in LETTERS[1:10]) print(i)
+
+for(i in 1:10) print(rnorm(20))
+
+x <- 11:20
+for(i in 1:10) {
+  
+  if(x[i] > 15) print(x[i])
+  
+}
+```
+
+Use `while()` to repeat code if a test expression is `TRUE` and until it is `FALSE`. See also `repeat`.
+
+```{r}
+x <- 1:2
+
+while(x < 5) {
+  
+  print(x)
+  x <- x + 1
+  
+}
+```
+
+Use `break` to break out of the loop early, and `next` to skip to the next iteration. Use both with `if` statements.  
+
+```{r}
+for(i in 1:10) {
+  
+  if(i == 3) next
+  
+  if(i > 8) {
+    
+    print("i is greater than 8!")
+    break
+    
+  }
+  
+  print(i)
+  
+}
+
+```
+
+
+Exercise 45: Use `for` or `while` loops to:
+
+1. Create 10 replicate sets of 20 numbers drawn from a normal distribution (with mean of 0 and standard deviation of 1). See `?rnorm()`. 
+2. Modify your code from #1 to create 10 means of those sets of 20. 
+3. Modify your code from #2 to save each of the 10 means into a vector named `ndist.means`. Instantiate `ndist.means` outside the loop before filling it. See `?vector`.
+4. Generate a vector containing the first 100 elements of the Fibonacci sequence. (It starts with `c(1,1)`, then each element is the sum of the previous two elements : `c(1, 1, 2, 3, 5, 8)` etc. You will need to start with (instantiate) a vector whose first two elements are 1.
+5. Use `rnorm()` to find a set of 10 numbers that has a standard deviation between 0.999 and 1.001, inclusive of 0.999 and exclusive of 1.001.
+
+```{r}
+
+for(i in 1:10) print(rnorm(20)) #1
+for(i in 1:10) print(mean(rnorm(20))) #2
+
+ndist.means <- vector("numeric", length=10) #3.1
+for(i in 1:10) ndist.means[i] <- mean(rnorm(20)) #3.2
+
+fib <- vector("numeric", length=100) #4.1
+fib[1:2] <- 1 #4.2
+for(i in 3:100) fib[i] <- fib[i-2] + fib[i-1] #4.3
+
+fib <- vector("numeric", length=100) # 4 alternate
+for(i in 1:100) { # 4 neater, but slower
+  
+  if(i < 3) fib[i] <- 1
+  else fib[i] <- fib[i-2] + fib[i-1]
+  
+}
+
+#5
+rand <- vector("numeric", length=1000)
+rsd <- sd(rand)
+count <- 0
+
+while(rsd < 0.999 | rsd >= 1.001) {
+  
+  rand <- rnorm(1000)
+  rsd <- sd(rand)
+  count <- count + 1
+  if(rsd >= 0.999 & rsd < 1.001) print(count)
+
+}
+```
+
+##### Looping Functions
+
+`lapply()` passes each element of the `X` argument to a function, either called by name or defined anonymously by the user. Concatenates the results of each iteration into a list. Cannot change objects outside of the function! (But a `for` loop can). Pass extra arguments to `FUN` through `...`. Use anonymous functions to ignore elements `X` argument.
+
+Always use looping functions instead of `for` loops (they're slower), unless you need to work on objects outside the loop.
+
+```{r, error=TRUE}
+lapply(1:10, FUN=sqrt)
+
+lapply(list(1:10, c(2:11, NA)), FUN=sum) # NAs not removed
+lapply(list(1:10, c(2:11, NA)), FUN=sum, na.rm=TRUE) # pass TRUE to na.rm in sum
+
+lapply(1:10, FUN=function(i) c(i, i^2)) # use X in anonymous function
+
+lapply(1:5, FUN=sample, x=1:10, size=5) # hmmm, why replace = TRUE?
+lapply(1:5, FUN=sample, x=1:10, size=5, replace=FALSE) # X becomes prob argument!
+lapply(1:5, FUN=function(i) sample(x=1:10, size=5)) # ignore X with anonymous function
+```
+
+`sapply()` is same as `lapply()`, but attempts to simplify the result.
+
+```{r}
+sapply(1:10, FUN=function(i) c(i, i^2))
+```
+
+`apply()` uses a function on the elements of a given dimension ("margin") of an array or matrix or data frame. 
+
+```{r}
+mat <- matrix(1:9, ncol=3)
+apply(mat, MARGIN=1, FUN=sum)
+apply(mat, MARGIN=2, FUN=sum)
+apply(mat, MARGIN=2, FUN=function(x) sd(x) / (length(x) - 1))
+```
+
+Exercise 46: Use looping functions to:
+
+1. Create a list of 10 replicate sets of 20 numbers drawn from a normal distribution (with mean of 0 and standard deviation of 1). See `?rnorm()`.
+2. Create a vector of means for 10 sets of 20 random numbers (as in #1). 
+3. Create a list with 20 elements, where the first element contains 10 random numbers (as in #1), and each subsequent element contains 10 more random numbers (the second element contains 20 random numbers, and so on).
+4. Calculate the standard deviation of each measurement column in `iris`. 
+5. Calculate the standard error of each measurement column in `iris`.
+6 Bonus. Generate a vector containing the first 100 elements of the Fibonacci sequence.
+7. Use `rnorm()` to find a set of 10 numbers that has a standard deviation between 0.999 and 1.001, inclusive of 0.999 and exclusive of 1.001.
+
+```{r Exercise 46, results="hide"}
+lapply(rep(20, 10), rnorm) #1
+lapply(1:10, FUN=function(i) mean(rnorm(20))) #2
+lapply(seq(10, length.out=20, by=10), rnorm) #3
+apply(iris[1:4], MARGIN=2, sd) #4
+lapply(iris[1:4], sd) #4 alternate
+ses <- apply(iris[1:4], MARGIN=2, function(i) sd(i) / (length(i) - 1)) #5
+#6 (probably) not possible, because looping fuctions cannot refer to objects outside the function call.
+```
+`mapply()` can loop through multiple arguments. 
+
+```{r, error=TRUE}
+lapply(LETTERS[1:5], rep, times=5) # standard lapply application
+lapply(LETTERS[1:5], rep, times=1:5) # doesn't work!
+mapply(FUN=rep, x=LETTERS[1:5], times=1:5) # use mapply
+```
+Exercise 47: Use `mapply()` to create 5 sets of random numbers with `rnorm()`, having 1 to 5 samples, a mean of -2 to 2, and standard deviaion of 1 to 5, respectively.
+
+```{r Exercise 47}
+mapply(FUN=rnorm, n=1:5, mean=-2:2, sd=1:5)
+```
+
+## Week 9: Loops Part Deux
+
+##### The `do.call()` Function
+
+`do.call()` takes a function and a list of arguments to pass to the function. Works nicely with `lapply()` and functions with `...` argument.
+
+```{r, eval=FALSE}
+do.call(log, args=list(x=5, base=10)) # demonstrative, but not very useful
+
+do.call(sum, list(1, 2, 3)) # use with ... argument
+do.call(sum, list(1, 2, 3, NA))
+do.call(sum, list(1, 2, 3, NA, na.rm=TRUE))
+
+do.call(c, args=lapply(LETTERS[1:5], rep, times=5)) # use lapply and ...
+do.call(sum, args=c(lapply(c(1:3, NA), rep, times=5), na.rm=TRUE)) # add named argument to list with c()
+```
+
+Exercise 48. Use `do.call()` and looping functions to:
+
+1. to generate 5 sets of 20 random numbers with a mean of ~5 and combine them into a matrix where each set of 20 is a column. Remember `cbind()`.
+2. Same as 1, but have the mean of the random number sets increase from 0 to 20 in increments of 5.
+3. Same as 2, but have the standard deviation increment from 1 to 5.
+
+```{r Exercise 48, error=TRUE, eval=FALSE}
+do.call(cbind, lapply(1:5, rnorm, n=20, mean=5, sd=1)) #1 doesn't work, looping through sd
+do.call(cbind, args=lapply(1:5, function(i) rnorm(n=20, mean=5))) #1
+
+do.call(cbind, lapply(seq(0, 20, 5), function(i) rnorm(20, mean=i))) #2
+
+do.call(cbind, lapply(seq(0, 20, 5), rnorm, n=20, sd=1)) # 2 alternate
+
+do.call(cbind, mapply(rnorm, n=20, mean=seq(0, 20, 5), sd=1:5, SIMPLIFY=FALSE))
+```
+
+## Week 10: Efficient Coding with Loops, Vectorization, and Parallel Processing
+
+##### Nested Loops
+
+You can nest loops to iterate through pairwise combinations of multiple vectors.
+
+```{r, results="hide"}
+for(i in 1:5) { # for loop
+  
+  print(paste("start of loop ", i))
+  
+  for(j in LETTERS[1:5]) print(paste("j = ", j))
+  
+  print(paste("end of loop ", i))
+  
+}
+
+lapply(1:5, FUN=function(i) { # looping function
+  
+  sapply(LETTERS[1:5], FUN=function(j) c(i = i, j = j))
+  
+})
+```
+
+Exercise 49: Use nested looping functions to perform pairwise linear regressions for all measurement variables in `iris`. See `?lm`.
+Bonus: Perform all pairwise regressions for each of the three species seperately.
+
+```{r Exercise 49, results="hide"}
+
+iris.lrs <- lapply(iris[,1:4], FUN=function(i) {
+      
+      lapply(iris[,1:4], FUN=function(j) {
+        
+        lm(i ~ j)
+      
+      })
+})
+
+# Bonus
+iris.lrs <- lapply(levels(iris$Species), FUN=function(i) {
+  
+    lapply(1:4, FUN=function(j) {
+      
+      lapply(1:4, FUN=function(k) {
+        
+        lm(iris[iris$Species == i, j] ~ iris[iris$Species == i, k])
+      
+      })
+      
+  })
+  
+})
+
+```
+
+Exercise 50. Create a function `pair.prod()` that takes two numeric vectors `x` and `y` as arguments and returns a matrix showing the pair-wise products of elements in each vector. Eg `pair.prod(x=1:2, y=4:5)` would return `matrix(c(4, 8, 5, 10), nrow=2)`. Use nested looping functions.
+
+```{r Exercise 50}
+pair.prod <- function(x, y) {
+  
+   mat <- sapply(1:length(x), FUN=function(i) {
+    
+    sapply(1:length(y), FUN=function(j)  x[i] * y[j])
+    
+  })
+   
+   mat <- t(mat)
+   dimnames(mat) <- list(x, y)
+   return(mat)
+  
+}
+
+pair.prod(1:3, 4:6)
+```
+
+##### Vectorization
+
+Loops are often necessary, but they can slow code down considerably, especially nested loops. So try to avoid them for simple tasks. Try using combinations of existing functions in R (eg., `colSums()`, `rowMeans()`) that are written in C or use matrix algebra.
+
+`outer()` computes outer product by default, but can do pairwise operations with any function taking two arguments. 
+
+```{r}
+outer(1:3, 4:6)
+outer(1:3, 4:6, FUN="+")
+outer(1:3, 4:6, FUN=function(x, y) 2 * x * y)
+```
+
+`combn()` returns or performs a function on all n-wise combinations of the elements in `x`. Does not return identity or synonymous combinations. 
+
+```{r}
+combn(x = 1:10, m=3)
+combn(x = 1:10, m=2, FUN=sum)
+```
+
+`diff()` provides lagged differences, eg. `diff(log(1:10), lag=2)`
+
+`dist()` provides distance matrix, eg. `dist(log(1:5))`.
+
+`cov()` and `cor()` produce a variance-covariance matrix and correlation matrix (respectively) for any set of variables. Use to vectorize statistical calculations. eg `cov(iris[1:3])`
+
+`diag()` returns diagonal of any square matrix.
+
+`upper.tri()` and `lower.tri()` return a logical matrix of same size as `x` indicating upper and lower triangle elements.
+
+Exercise 51: Use `combn()` to perform pairwise linear regressions for all measurement variables in `iris`. Bonus: Modify your code from 51 to make a vector `reg.coef` that holds the regression coefficients for all pairwise variables. See Values section of help file for `lm()`. Hint: Look at the data structure returned by a call to `combn()` when `FUN = NULL` and `simplify = FALSE`. 
+
+Exercise 52: Find a vectorized solution to determine the coefficient of variation (sd / mean) for all measurement variables in `iris`. 
+
+Exercise 53: Create a matrix showing the pairwise products of the standard deviations of each measurement variable in `iris`.
+
+Exercise 54: Without using `cor()` create a correlation matrix showing the Pearson product-moment correlation between all measurement variables in `iris`. Hint: cor_xy = cov_xy / (sd_x * sd_y). Check your solution with `cor()`.
+
+Exercise 55: Create a matrix for `iris` wherein the lower triangle is the covariance among variables, upper triangle is the correlation among variables, and diagonal is the variance of each variable. 
+
+```{r Exercise 51, result="hide"}
+combn(iris[ , 1:4], m=2, FUN=lm, simplify=FALSE)
+
+combn(iris[,1:4], m=2, simplify=FALSE) # hint
+reg.coef <- combn(iris[ , 1:4], m=2, simplify=TRUE, # Bonus
+                  FUN=function(i) lm(i[, 1] ~ i[, 2])$coefficients[2])
+```
+
+```{r Exercise 52}
+covi <- cov(iris[1:4])
+vari <- diag(covi)
+sdsi <- sqrt(vari)
+mnsi <- colMeans(iris[1:4])
+cvsi <- sdsi / mnsi
+```
+```{r Exercise 53}
+sdsi <- sqrt(diag(cov(iris[1:4])))
+sdpi <- outer(sdsi, sdsi)
+```
+
+```{r Exercise 54}
+cov(iris[1:4]) / sdpi
+```
+
+```{r Exercise 55}
+ifelse(upper.tri(cov(iris[1:4])), cor(iris[1:4]), cov(iris[1:4]))
+```
+
+## Week 11: Basic Data Visualization
+
+##### Basic R Plotting
+
+Plots are made in "devices" that have a (very) large set of graphical parameters, typically with very useful defaults. 
+
+Many plotting functions will open a new device, including `plot()`, `matplot()`, `hist()`, `barplot()`, and `boxplot()`, eg. `plot(x=1:10, y=(1:10)^2)`
+
+Other graphical functions add to the plotting window of an open device, and require coordinate inputs, including `legend()`, `text()`, `arrows()`, `points()`, `lines()`, `abline()`, `polygon()`, `symbols()`. eg `lines(x=1:10, y=(1:10)^2)`  
+
+Still other graphical functions add to the device window, outside the plot itself, including `title()`, and `axis()`. eg `title(main="Example Plot")`. Many of the arguments to these are also accessible inside the plotting function. eg. `plot(x=1:10, y=(1:10)^2, main="Example Plot", xlab="x", ylab="x squared")`
+
+Important arguments to plots include:
+
+1. `xlab`, `ylab`, `main`, `sub`: label axes
+2. `xlim` and `ylim`: set the limits of axes
+3. `col`: vector plotting colors with integers or color names. Recycling applies. 
+4. `pch`: vector of plotting characters (points) with integers. Recycling applies.
+5. `cex`: vector of plotting sizes. Recycling applies.
+6. `lty`: set line type
+7. `lwd`: set line width
+8. `type`: set plot type -- "p", "l", "b", "n" = points, lines, both, none
+9. `add`: if `TRUE`, adds to existing device, instead of making a new one
+
+```{r}
+x <- 1:10
+y <- x ^ 2
+
+plot(x, y, xlab="x", ylab="x squared")
+plot(x, y, ylim = c(20, 60)) # restrict y axis
+plot(x, y, col = "blue") # make all points blue
+plot(x, y, col = 1:10) # make points all different colors
+plot(x, y, pch=16, col="blue") # make all points solid circles
+plot(x, y, pch=ifelse(x <= 5, 1, 3)) # conditional pch
+plot(x, y, pch=2, cex=2) # change plotting size
+plot(x, y, cex=seq(.1, 2, length.out=10)) # points different sizes
+lines(x, y, col="darkred") # add line to a plot
+lines(x, y, lty=2, col="darkred") # add lines to plot
+lines(x, y, lty=2, col="darkred", lwd=5)
+plot(x, y, type="l", lwd=2, lty=2, col="red")
+plot(x, y, type="n") # plots nothing, but sets up device
+```
+
+`legend()` adds a legend to a plot.
+
+```{r}
+plot(x, y, pch=ifelse(x <= 5, 1, 2))
+
+legend(x=2, y=90, 
+       legend=c("<= 5", "> 5"), 
+       pch=c(1:2))
+```
+
+Exercise 58: Plot sepal length against sepal width from `iris`. Add axis labels, make sure x and y limits are appropriate, and color the plotting characters differently for the different species. Use nested `ifelse()`.
+
+Exercise 59: Add a legend to your iris sepal plot from Exercise 58. 
+
+
+```{r Exercise 58, eval=FALSE}
+
+plot(iris[[1]], iris[[2]], ylim=c(2, 4.5),
+  xlab="sepal length (mm)", ylab="sepal width (mm)", 
+  pch=16), col=ifelse(iris[[5]]=="setosa", "blue", # use nested ifelse()
+             ifelse(iris[[5]]=="versicolor", "red", "purple")))
+
+plot(iris[[1]], iris[[2]], ylim=c(2, 4.5),
+  xlab="sepal length (mm)", ylab="sepal width (mm)", 
+  pch=16, 
+  col=ifelse(iris[[5]]=="setosa", "blue", # use nested ifelse()
+             ifelse(iris[[5]]=="versicolor", "red", "purple")))
+
+# could use switch like this
+plot(iris[[1]], iris[[2]], ylim=c(2, 4.5),
+  xlab="sepal length (mm)", ylab="sepal width (mm)", 
+  pch=16, 
+  col=sapply(X=iris[[5]], FUN=switch, "blue", "red", "purple"))
+```
+
+```{r Exercise 59}
+plot(iris[[1]], iris[[2]], ylim=c(2, 4.5),
+  xlab="sepal length (mm)", ylab="sepal width (mm)", 
+  pch=16, 
+  col=sapply(X=iris[[5]], FUN=switch, "blue", "red", "purple"))
+
+legend(x=6.75, y=4.5, 
+       legend=c("setosa", "versicolor", "virginica"), # labels
+       pch=16, col=c("blue", "red", "purple"),
+       bty="n") # removes box
+```
+
+`barplot()` takes a vector or matrix of bar height values, and x-axis is not in scale of any data. Returns a numeric vector showing location of bars along x-axis. Defaults to stacking rows of matrix, unless `beside=TRUE`.
+
+```{r}
+heights <- c(1, 5, 9)
+barplot(heights)
+barplot(heights, col=c("red", "blue", "black"))
+bp1 <- barplot(heights)
+
+# with a matrix
+heights2 <- rbind(heights, c(8, 5, 2))
+barplot(heights2)
+barplot(heights2, beside=TRUE)
+barplot(heights2, beside=TRUE, ylim=c(0, 10))
+```
+
+Add error bars with `arrows()`. Set `code = 3` and `angle = 90`.
+
+```{r}
+bp1 <- barplot(heights, ylim=c(0,10))
+
+upper <- heights + .5
+lower <- heights - .5
+
+arrows(x0=bp1, y0=lower, x1=bp1, y1=upper, 
+       code=3, angle=90, length=0, lwd=2)
+```
+
+Exercise 60: Make a barplot of average sepal length across the three iris species. See `?aggregate`. 
+
+Exercise 61: Add error bars indicating 1 standard deviation above and below the mean.
+
+Exercise 62: Make a barplot of all four measurements for all three species (12 bars) grouping bars from each measurement. 
+
+`par()` has a gazillion arguments that modify default device parameters. Call `par()` prior to creating new plotting devices. Use `dev.off()` to close devices and reset all graphical parameter defaults. 
+
+Commonly used arguements to `par()` include:
+
+1. `mfrow`: allows multiple plots per device
+2. `mar`: sets margin space around plotting window; default = `c(5, 4, 4, 2)`
+3. `bg`: sets background color
+4. `bty`: sets plot window border type
+
+```{r}
+par(mfrow=c(2,2))
+sapply(iris[, 1:4], function(x) plot(x, iris[, 1]))
+
+par(mfrow=c(2,2), mar=c(4, 5, 1, 1))
+sapply(iris[, 1:4], function(x) plot(x, iris[, 1]))
+```
+
+Export plots with `pdf()`, `png()`, `bmp()`, `tiff()`, and `jpeg()`. Or from plots pane (not recommended).
+
+```{r}
+pdf(file="~/Dropbox/UNM R Course/myplot.pdf")
+par(mfrow=c(2,2), mar=c(4, 4, 1, 1))
+sapply(iris[, 1:4], function(x) plot(x, iris[, 1]))
+dev.off()
+```
+
+Exercise 63. Make a plotting device showing relationships between sepal length and sepal width for each of the iris species. Export it to as a pdf to your harddrive. 
+
+## Week 13: Speed Testing and Parallel Processing 
+
+##### Speed Testing
+
+Evaluate the speed of your code using `system.time()`, eg. `system.time(rnorm(1000000))`. Focus on `elapsed` time to understand function call efficiency (total seconds). 
+
+```{r, error=TRUE, eval=FALSE}
+system.time(
+  pair.prod(1:1000, 1:1000)
+)
+
+system.time(
+  outer(1:1000, 1:1000)
+)
+```
+
+For very fast code, run function calls multiple times to get good estimates
+```{r}
+system.time(
+  outer(1:10, 1:10)
+)
+
+system.time(
+  sapply(1:10000, function(x) outer(1:10, 1:10))
+)
+```
+
+Always loop to get sample of processing times for each algorithm. 
+
+```{r, eval=FALSE}
+speedtest <- sapply(1:5, function(i) {
+  
+  myfun <- system.time(pair.prod(1:1000, 1:1000))["elapsed"]
+  vfun  <- system.time(outer(1:1000, 1:1000))["elapsed"]
+  t(c(myfun=myfun, vfun=vfun))
+  
+})
+
+rowMeans(speedtest)[1]/rowMeans(speedtest)[2] # 400x slower to loop!
+
+# with summing across repeated calls
+
+speedtest <- sapply(1:5, function(i) {
+  
+  myfun <- system.time(
+    sapply(1:10, function(x) pair.prod(1:1000, 1:1000))
+    )["elapsed"]
+  
+  vfun  <- system.time(
+    sapply(1:10, function(x) outer(1:1000, 1:1000))
+    )["elapsed"]
+  
+  t(c(myfun=myfun, vfun=vfun))
+  
+})
+
+rowMeans(speedtest)[1]/rowMeans(speedtest)[2]
+```
+
+Exercise 56. Multiply the measurement columns in `iris` by the vector `c(1, 10, 100, 1000)`. Compare the use of `mapply()` with a vectorized solution. See hint below for solution using matrix algebra.
+
+```{r Exercise 56}
+
+# Hint
+matrix(1, nrow=5, ncol=4) %*% diag(10 ^ (0:3))
+
+dd <- as.matrix(iris[1:4])
+vd <- diag(10 ^ (0:3))
+
+speedtest <- sapply(1:5, function(i) {
+  
+  looptime <- system.time(
+    sapply(1:1000, function(x) mapply(x = 1:4, y = 10 ^ (0:3), 
+                                      FUN=function(x, y) iris[[x]] * y))
+  )["elapsed"]
+  
+  mattime1 <- system.time(
+    sapply(1:1000, function(x) as.matrix(iris[1:4]) %*% diag(10 ^ (0:3)))
+  )["elapsed"]  
+  
+  mattime2 <- system.time(
+    sapply(1:1000, function(x) dd %*% vd )
+  )["elapsed"]
+  
+  
+  t(c(myfun=looptime, mfun1=mattime1, mfun2=mattime2))
+  
+})
+```
+
+##### Parallel Processing
+
+Parallel processing in R is super easy and can speed up looping code substantially. It works for processes that can be broken into many independent pieces. Increases in speed only apparent when processing time is long, > ~ 1 minute.
+
+The package `parallel` contains analogues to `lapply()` that use multiple processors on the machine running R. 
+
+```{r, eval=FALSE}
+install.packages("parallel")
+library(parallel)
+```
+
+Determine the number of processors on your machine with `detectCores()`. 
+
+Leave at least one core for other processes, or your computer will freeze until the computation is finished!
+
+To run a parallel looping function: 
+
+1. Make a new cluster object with `makeCluster()`.
+2. Use parallel apply functions, see `?parApply`.
+3. Close the cluster with `stopCluster()`.
+
+```{r, eval=FALSE}
+ncores <- detectCores()-1
+
+cl1 <- makeCluster(ncores)
+parLapply(cl=cl1, X=rep(10, 5), fun=rnorm)
+parLapply(cl=cl1, X=rep(10, 5), fun=function(x){
+  
+  ANYTHING YOU WANT
+   
+})
+
+stopCluster(cl1)
+```
+
+Except for Windows, `mclapply()` and `mcmapply()` work like `lapply()` and `mapply()`, respectively -- default number of cores is `mc.cores = 2`. 
+
+Exercise 57: Use `lapply()` to find the number of sets of 20 random numbers that takes around 1 minute to generate. Should be between 100,000 and 1,000,000. Then compare the speed of generating that number of sets using `lapply()` vs. `parLapply()` and/or `mclapply()` with 2 or more cores. Don't bother generating sets of run times -- just one sample per approach will do. 
+
+```{r Exercise 57, eval=FALSE}
+loop <- system.time(
+  lapply(X=rep(20, 1000000), FUN=rnorm)
+  )
+
+cl1 <- makeCluster(3)
+parl <- system.time(
+  parLapply(cl=cl1, X=rep(20, 1000000), fun=rnorm)
+  )
+stopCluster(cl1)
+
+parl2 <- system.time(mclapply(rep(20, 1000000), rnorm))
+```
+
+## Week 14: Intro to Statistical Analysis: Linear Models
+
+##### Intro to Linear Models in R
+
+Model: A (to some extent simplified) description of relationships between components of a system capable of making predictions.
+
+Linear Function: A polynomial function of order one or less:
+
+* f(x) = b + mx
+* f(x1, x2) = b + m1x1 + m2x2
+
+Linear Model: A model in which relationships between system components are described as linear functions. Actually very flexible: combining components in "linear" manner and using transformations (sin, sqrt, etc) can lead to non-linear shapes.
+
+Linear Regression: A statistical technique for determining the parameters of a linear model, ie slope & y-intercept, that best fit data.
+
+`lm()` fits linear model to data with formula using `~`, read as "explained by". Use `data` argument with a data frame, so no need to extract columns. Fits model using ordinary least squares estimation (minimizes sum of squared error).
+
+```{r, eval=FALSE}
+an1 <- lm(Volume ~ Girth, data=trees)
+an1
+str(an1)
+```
+
+Exercise 64. Perform a linear regression between sepal length and sepal width for Iris setosa only, and extract from the model object a numeric vector of length 2 (name it `parms`) containing the model parameters. Give the parameters terse, useful names.
+
+```{r Exercise 64}
+id.set <- iris[iris$Species == "setosa", ]
+an2 <- lm(Sepal.Length ~ Sepal.Width, data=id.set)
+parms <- an2$coefficients
+names(parms) <- c("y.int", "slope")
+```
+
+The line describing the data (the linear model) can make y-value predictions for any value of x (or vise versa). See `fitted.values` in model object.
+
+```{r, eval=FALSE}
+preds <- an1$fitted.values
+
+plot(trees$Volume ~ trees$Girth,
+     pch=16, col="red", las=1,
+     xlim=c(-5, 25), ylim=c(-40, 80),
+     xlab="tree girth", ylab="tree volume")
+
+points(x=trees$Girth, y=preds, pch=16, col="blue", cex=.5)
+lines(x=trees$Girth, y=preds, col="blue", cex=.5)
+```
+
+Make predictions at any values of x with `predict()`.
+```{r, eval=FALSE}
+# make predictions at any values of x
+nd1 <- data.frame(Girth=seq(0, 25, length.out = 50))
+preds2 <- predict(an1, newdata=nd1)
+
+plot(trees$Volume ~ trees$Girth,
+     pch=16, col="red", las=1,
+     xlim=c(-5, 25), ylim=c(-40, 80),
+     xlab="girth", ylab="volume")
+
+points(y = preds2, x = nd1$Girth, pch=16, col="blue", cex=.5)
+lines(y = preds2, x = nd1$Girth, col="blue", cex=.5)
+```
+
+For univariate regressions, use `abline()`.
+
+```{r, eval=FALSE}
+plot(trees$Volume ~ trees$Girth,
+     pch=16, col="red", las=1,
+     xlim=c(-5, 25), ylim=c(-40, 80),
+     xlab="girth", ylab="volume")
+
+abline(reg=an1, col="blue", cex=.5)
+```
+
+For thought: Does this linear model do a good job of describing the system? 
+
+Exercise 65: Make a plot of sepal length vs. sepal width for Iris setosa and use `predict()` to visualize the linear model.
+
+```{r Exercise 65}
+plot(id.set$Sepal.Length ~ id.set$Sepal.Width,
+     pch=16, col="red", las=1,
+     xlim=c(0, 5), ylim=c(0, 6),
+     xlab="sepal width", ylab="sepal length")
+
+abline(an2)
+
+nd2 <- data.frame(Sepal.Width=seq(0, 5, length.out = 50))
+preds2 <- predict(an2, newdata=nd2)
+
+lines(x=nd2$Sepal.Width, y=preds2, col="red")
+```
+
+Residuals (errors) are the raw amount by which true y-values differ from the predictions. See `residuals` from model object.
+
+```{r, eval=FALSE}
+e1 <- an1$residuals
+sse <- sum(e1 ^ 2) # sum of squared errors
+rmse <- sqrt(sse/(length(e1) - 2)) # estimate of typical (average) error
+```
+
+Hypothesis Testing Statistics:
+
+* Frequentist: Statistics for determining the probability of achieving particular model parameters assuming the null hypothesis is true, ie nothing interesting is happening 
+
+* Bayesian: Statistics for determining the probability that model parameters are true.
+
+For linear models, null hypothesis typically that slope and/or y-intercept are zero.
+
+Use `summary()` to get hypothesis testing statistics and model parameters. 
+
+```{r, eval=FALSE}
+sum.an1 <- summary(an1)
+sum.an1$coefficients
+```
+
+The coefficients table:
+
+* Estimate: estimates for parameters in linear model (y-intercept and slopes)
+* Std. Error: standard error of parameters = estimated standard deviation
+* t-value: Estimate / Std. Error = distance from 0 on centered t-distribution
+* Pr(>|t|): area under t-distribution greater than estimated t-value = probability of achieving Estimate value if true value is 0, given Std. Error.
+
+Test for effects of categorical data by including factors as variables.
+
+```{r, eval=FALSE}
+an4 <- lm(len ~ supp, data=ToothGrowth)
+summary(an4)
+```
+
+Exercise 66: Determine the difference between Iris setosa and Iris virginica in sepal length. (Subset the data to remove versicolor).
+
+Exercise 67: Add a new column `spp1` to `iris` with values equal to 0 for setosa, 1 for viriginca, and 2 for versicolor. Perform regression as in Exercise 66, but with `spp1` instead of `species`. Make sure this column is NOT a factor. What is different about the output?
+
+Exercise 68: Add a new column `spp2` to `iris` with values equal to 2 for setosa, 0 for viriginca, and 1 for versicolor. Make sure this column is NOT a factor. Perform regression as in Exercise 67, but with `spp2` instead of `spp1`. What is different about the output?
+
+```{r}
+id <- iris[iris$Species != "versicolor", ]
+an10 <- lm(Sepal.Length ~ Species, data=id)
+summary(an10)
+
+iris$spp1 <- ifelse(iris$Species=="setosa", 0, 
+                    ifelse(iris$Species == "virginica", 1, 2))
+
+iris$spp2 <- ifelse(iris$Species=="setosa", 2, 
+                    ifelse(iris$Species == "virginica", 0, 1))
+
+an11 <- lm(Sepal.Length ~ spp1, 
+           data=iris[iris$Species != "versicolor",])
+summary(an11)
+
+an12 <- lm(Sepal.Length ~ spp2, data=iris[iris$Species != "versicolor",])
+summary(an12)
+```
+
+Use `contrasts()` on factors to see which levels are coded as 0.
+
+##### Multiple Regression
+
+Create a model to explain y-values as a linear combination of multiple variables by usign `+` in `lm()`. Offers estimate of slopes when values of other variables are held constant, ie. controls for effects of other variables. Important when multiple variables are correlated. 
+
+```{r, eval=FALSE}
+an3 <- lm(len ~ supp + dose, data=ToothGrowth)
+summary(an3)
+```
+
+Whole model statistics:
+
+* Residual standard error: typical average value of residuals
+* Multiple R-squared: proportion of variation in y explained by model 
+* Adjusted R-squared: as above, but adjusted for number of slopes
+* F-statistic: estimate of difference in fit between full model and model with only y-intercept 
+* p-value: probability of F-statistic (model improvement with estiamted slopes) given no true added benefit of estimating slopes.
+
+Add interaction terms with `*` to test whether parameter estimates are dependent on values of other variables.  
+
+```{r, eval=FALSE}
+an5 <- lm(len ~ supp * dose, data=ToothGrowth)
+summary(an5)
+```
+
+EXTREMELY IMPORTANT: When interaction term is in model, Estimate is effect of particular variable when value of interacting variable is 0. 
+
+Exercise 69: In a linear model explaining sepal length for Iris setosa and Iris viriginica only (exclude versicolor), look for an interaction between species identity and sepal width. What does the parameter estimate for Sepal.Width in this model tell you? Confirm your suspicion. 
+
+
+
+##### ANOVA
+
+If you must, download `car` package, and use `Anova()`. Do not use `anova()` from base package!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+

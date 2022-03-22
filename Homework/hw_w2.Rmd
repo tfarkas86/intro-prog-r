@@ -1,0 +1,74 @@
+---
+title: "Week 2 Homework"
+author: "Tim Farkas"
+date: "9/12/2017"
+output:
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#knitr::opts_chunk$set(results = "hold")
+```
+
+**Instructions**: Below are problems similar to the exercises done in class relating to the all course content up to and including Week 2. For questions that ask you to produce code, please insert a new code chunk after each sub-problem (using Insert button in shortcuts bar above, or on Mac <kbd>CMD</kbd> + <kbd>OPT</kbd> + <kbd>I</kbd>, on PC <kbd>CTL</kbd> + <kbd>ALT</kbd> + <kbd>I</kbd>). Put your code inside the chunk. When you Knit your document, the code in chunks will be evaluated, and both the code and output will be printed. Please Knit to Word and upload a DOC file to Blackboard. Please see the R Markdown information I provided on Blackboard for details. 
+
+**Example Problem**
+
+1. Create an integer vector `p` from 1 to 10 incrementing by 1. 
+```{r}
+p <- 1:10
+```
+2. Create an integer vector `prev` that reverses the elements of `p`
+```{r}
+prev <- rev(p)
+```
+
+
+**Preliminary**: Clear all objects from your global environment.
+
+**Problems**
+
+Problem 2.1:  
+
+1. Make a numeric vector `x` from 0 to 50 with exactly 25 elements.
+2. Add 100 to every element in `x` and overwrite `x` with the new vector.
+3. Make an integer vector `y` from 1 to 25 with exactly 25 elements.
+4. Check to make sure `y` is an integer vector, not a double.
+5. Make a numeric vector `z` by multiplying each element of `x` by the corresponding element of `y`.
+6. Make a character vector `type` of length = 3 showing the data types of `x`, `y`, and `z`, *and* name the three elements "x", "y", and "z". We didn't get to naming in class -- see last topic in Advanced Vector Creation.
+
+Problem 2.2
+
+1. Make a numeric vector `y2` containing the squares of each element of `y`.
+2. Make a logical vector `x_y2` indicating whether each element in `y2` is greater than or equal to the corresponding element (element at same index) in `x`.
+3. Make a logical vector `x_y2.500` indicating whether each element in `y2` is greater than or equal to the corresponding element in `x`, while also being less than 500.
+4. Make a logical vector `x_y2.200` indicating whether each element in `y2` is greater than or equal to the corresponding element in `x`, while also being greater than 200.
+5. Create a logical vector of length = 1 indicating whether the number of `TRUE` values in `x_y2.500` is exactly equal to the number of `TRUE` values in `x_y2.200`. Hint: `?sum`.
+6. Create a logical vector `x_y2.comp` that indicates whether each element of `x_y2.500` is equal to each element of `x_y2.200`.
+7. Create a logical vector of length = 1 indicating whether all the values of `x_y2.500` are exactly equal to the values of `x_y2.200`.
+8. Create a numeric vector `z.comp` that is a subset of `z`, containing only the elements for which the corresponding elements of `x_y2.500` and `x_y2.200` are equal.
+
+Problem 2.3
+
+1. Create a vector `s1` containing all integers from 0 to 100.
+2. Create a vector `s2` containing all integers from 50 to 150. 
+
+The function `sample()` randomly draws elements from vector provided by the user (that's you!). See `?sample` for details.
+
+3. Use `sample()` to draw 20 integers each from `s1` and `s2`, assigning the samples to `d1` and `d2`, respectively.
+4. Using the function `mean()`, create a numeric vector `sum_stats` of length = 2 indicating the arithmetic means of `d1` and `d2`, and name the elements `d1_mean` and `d2_mean`, respectively. 
+5. Using square-bracket notation `[]` to index `sum_stats` by position (not name or logical), determine the difference between the arithmetic means of `d1` and `d2`, and assign it to `d_diff`. 
+6. Using `c()`, concatinate d_diff to `sum_stats`, and simultaneously name this element `diff`. 
+7. Did you get the desired output? If not, use `names()` to reset the names of `sum_stats`.
+8. Using the function `var()`, determine the variance of `d1` and `d2`, and *using square bracket notation* simultaneously concatinate them to end of `sum_stats` and name them `d1_var` and `d2_var`, respectively. 
+
+The plug-and-play equation for variance in R is: var = sum((x - mean(x)) ^ 2) / length(x), where x is a vector of numeric data (eg `d1` or `d2` ;).
+
+7. Use the above equation to manually determine the variance of `d1` and `d2` and concatenate them into a *named* numeric vector `man_var`. 
+8. By indexing `sum_stats` with square brackets and element positions, create a named logical vector `var_var` of length = 2 comparing the variance values created using `var()` with those created manually. If they are not the same, why not?
+
+The function `t.test()` can evaluate the probability that two sets of data (ie samples) differ because of real differences in the processes generating the data, as opposed to chance differences. This probability is expressed in the output of `t.test()` as the "p-value".
+
+9. Use `t.test()` to determine the p-value for the difference between `d1` and `d2`, and compare the means calcuated using `t.test()` with those you calculated in #4 of this problem. For extra challenge, do this formally by extracting the means from the object returned by `t.test()`, and create a named logical vector that compares these with the values you calculated in part #4. 

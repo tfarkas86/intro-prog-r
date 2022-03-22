@@ -1,0 +1,203 @@
+---
+title: "Week 8 Homework"
+author: "Tim Farkas"
+date: "10/25/2017"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+#knitr::opts_chunk$set(results = "hold")
+```
+
+**Instructions**: Below are problems similar to the exercises done in class relating to the all course content up to and including Week 8. For questions that ask you to produce code, please insert one or a couple code chunks (using Insert button in shortcuts bar above, or on Mac <kbd>CMD</kbd> + <kbd>OPT</kbd> + <kbd>I</kbd>, on PC <kbd>CTL</kbd> + <kbd>ALT</kbd> + <kbd>I</kbd>). 
+
+Put all code you want to execute inside a chunk. When you Knit your document, the code in chunks will be evaluated, and both the code and output will be printed. Any "inline" code (eg `x <- 10`) will not be evaluated, hence `x` in this case will not be created, and cannot be used by any downstream code. 
+
+Please Knit to Word and upload a DOC file to Blackboard.
+
+You can see more information about R Markdown in a Rmd file on Blackboard. 
+
+In this homework, some pieces of code will not Knit properly if not run in the same chunk. Specifically, when you create a plot in a chunk, any further code modifying that plot needs in be in the same chunk where the plot was initially called. Furthermore, during development and testing, you will have run the whole chunk at once for modifications to execute properly (line by line will fail). Finally, if you want to visualize a plot in the Plot tab, you will need to  run the code in the Console (highlight, then CTL + RTN).
+
+This will make some chunks rather lengthy, so please begin commenting your code by inserting a `#` on lines above the code text or after the code text on the same line. See Example Problem below. Any other comments that you think will be useful will be appreciated. Furthermore, please title your code chunks in the curly braces in the chunk header to indicate which problems are being addressed in each chunk. See the example below.
+
+**Example Problem**
+
+1. Create an integer vector `p` from 1 to 10 incrementing by 1. 
+```{r Problem 1}
+p <- 1:10 
+```
+2. Create an integer vector `prev` that reverses the elements of `p`
+```{r Problem 2}
+prev <- rev(p)
+```
+3. Given a vector `x`, make a vector `x2` for which each element is the square of the correponding element in `x`. 
+4. Make a scatterplot relating `x` to `x2`.
+5. Title the plot "Example Plot". 
+```{r Problems 3-5}
+# Problem E.3: Make Vectors.
+x <- 1:10; x2 <- x ^ 2 
+
+# Problem E.4: Create scatter plot of x against x2
+plot(x, x2)
+
+# Problem E.5. Add title to scatter plot
+title(main="Example Plot") # axis labels left as default
+```
+
+
+**Preliminary**: Clear all objects from your global environment.
+
+**Problems**
+
+#####8.1. Below are a number of programming exercises that may be acheived using `for` loops or looping functions. Accomplish the programming task using both of these methods if the method is in fact capable of achieving the task. If the method cannot achieve the task, indicate as such. For bonus, use the `ifelse()` function to achieve a task if that is possible. 
+
+1. Generate a vector `mns50` that gives the means of 10 sets of 50 numbers drawn from a normal distribution (with mean and sd of your choice). see `?rnorm` and `?sd`.
+2. Generate a vector `dbl` of length == 20 that starts with 5, and for which each subsequent value is twice the value preceding it. 
+3. Generate a vector `mns.dbl` that gives the means of 20 sets of numbers drawn from a normal distribution (with mean and sd of your choice), where the sample size increases as a doubling series, starting with 5. (see problem 2!!). 
+4. Same as #3, but make 1000 means, and instead of doubling, simple increments of 10, starting with 10. Call the vector of means `mns5.s`. 
+5. Bonus: Make a line plot showing the relationship between the mean and sample size from Problems 4. See `?plot`. Describe the pattern.
+
+```{r}
+# 1
+mns50 <- vector("numeric", length=10) #1 for loop instantiate a vector
+for(i in 1:10) mns[i] <- mean(rnorm(50)) #1 for loop
+
+mns50 <- sapply(1:10, FUN=function(i) mean(rnorm(50))) #1 looping function
+
+mns50 <- sapply(rep(50, 10), FUN=function(i) mean(rnorm(i))) # 1 looping function alternative
+       
+# 2 doable only with for loop, because you need to refer to newly created elements!
+
+dbl <- vector("numeric", length=20) 
+dbl[1] <- 5
+for(i in 2:20) dbl[i] <- 2 * dbl[i-1] 
+
+# 3
+
+mns.dbl <- sapply(dbl, function(i) mean(rnorm(i))) #3 w/ looping function, look how nice :)
+
+mns.dbl <- vector("numeric", length=20) # 3 w/ for loop  -- obviously less efficient :(
+for(i in 1:20) mns.dbl[i] <- mean(rnorm(dbl[i]))
+
+# 4
+teninc <- seq(10, by=10, length.out = 1000) # could loop to make this, but seq function does linear sequences (faster)
+mns.5 <- sapply(teninc, function(i) mean(rnorm(i))) # w/ looping function
+
+mns.5 <- rep(NA, 1000) # another way to instantiate, using NAs probably better than having 0s (which could be construed as data!)
+for(i in 1:1000) mns.5[i] <- mean(rnorm(teninc[i])) # with for loop: slower to code, visually cumbersome, slower to execute
+
+#5 Bonus!
+
+plot(x=teninc, y=mns.5, 
+     type="l", 
+     xlab="sample size", ylab="mean")
+
+# wow! The means are highly variable when sample size is low, and converging on zero with low variability when sample size is high. 
+```
+
+#####8.2 Below are some programming exercises that require you to make a function that takes user input. Put each function in its own named code chunk. Create a function that:
+
+1. returns the standard deviation of all rows in a matrix-shaped data structure passed to it as an argument. Name it `rowSds`. 
+1. Bonus: Test it with the first three columns of the `airquality` dataset, then fix your broken function. 
+
+2. returns the standard deviation of all columns in a matrix-shaped data structure passed to it as an argument. Name it `colSds`.
+
+3. returns the standard deviation of either all rows or all columns, depending on the value of an argument `MARGIN`. Name the function `sds`. 
+3. Bonus. Modify the `sds` to return a list with two elements named `rows.sd` and `cols.sd` containing the standard deviation for rows and columns, respectively, if the value of the argument `dim` is "both". 
+
+```{r 1-3}
+rowSds <- function(x) { # 1
+  
+  apply(x, MARGIN=1, FUN=sd)
+  
+}
+
+colSds <- function(x, na.rm=TRUE) { # 2 with bonus safeguard against NA values
+  
+  apply(x, MARGIN=2, FUN=function(x) sd(x, na.rm=na.rm))
+  
+}
+
+sds <- function(x, dim) { # 3
+  
+  if(dim=="rows") return(rowSds(x)) 
+  else if(dim=="cols") return(colSds(x)) 
+  else return("Error: dim not 'rows' or 'cols'")
+  
+}
+
+# 3 Bonus using switch, better than if/else statements here!
+sds2 <- function(x, dim="both") { # 3
+  
+  if(!dim %in% c("rows", "cols", "both")) return("Error: dim not 'rows', 'cols' or 'both'")
+  
+  switch(dim, rows=rowSds(x), 
+         cols=colSds(x), 
+         both=list(rows=rowSds(x), cols=colSds(x)))
+
+}
+```
+
+4. returns a Farkas sequence. Don't know what that is? It's sequence of numbers beginning with three replicate starting values, and for which each subsequent number is the sum of the preceeding three numbers. For example, the first 7 of the Farkas sequence for the number 2 would be: `c(2, 2, 2, 6, 10, 18, 34)`. The function should take a argument `start` for the three starting values, with a default of 1, and an argument `length` to determine the length of the sequence.
+4. Bonus: Elaborate the function to 1) execute only if `start` is numeric, and 2) check that `length` is numeric (do not execute if it isn't) and ensure it is a positive integer. If it is negative, do not execute. If it is not an integer, round down to an integer and print a warning message.
+
+```{r The Farkas Sequence Function}
+farkas <- function(length, start=1) { # put argument without 
+  
+  # Bonus stuff up here
+  if(!is.numeric(start)) return("Error: Starting value is not numeric")
+  if(!is.numeric(length)) return("Error: Vector length not coercable to integer")
+  if(length < 1) return("Error: Vector length not positive integer")
+  if(length %% floor(length) != 0) { # Using is.integer() won't work, because users will want to enter integers as double-type data 
+    
+    print("Vector length rounded down to nearest integer")
+    length <- floor(length)
+    
+  }
+  
+  # Main Function Loop
+  fark <- rep(start, length)
+  for(i in 4:length) fark[i] <- sum(fark[c(i-1, i-2, i-3)])
+  return(fark)
+  
+}
+```
+
+Bonus: Program your own square root function. To do this, iteratively search for a value `p` that when squared is within 0.0001 of the user-supplied number `x`, then return the value `p`.  Hint: You'll have to make an inital guess at `p`.
+
+```{r}
+mysqrt <- function(x, start = x/2) { # The Farkas method
+  
+  p <- start
+  while(p^2 < x - 0.0001 | p^2 > x + 0.0001) {
+    
+    if(p^2 > x) p <- p - (x - p) / 2
+    else        p <- p + (x - p) / 2
+    
+  }
+  
+  return(round(p, digits=5))
+  
+}
+
+mysqrt <- function(x, start = x/2) { # The Newton-Raphson method is smarter than the Farkas method
+  
+  p <- start
+  while(p^2 < x - 0.0001 | p^2 > x + 0.0001) {
+    
+    p <- (p + x / p) / 2 
+    
+  }
+  
+  return(round(p, digits=5))
+  
+}
+```
+
+
+
+
+

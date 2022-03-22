@@ -1,0 +1,120 @@
+---
+title: "Week 8 Homework"
+author: "Tim Farkas"
+date: "10/25/2017"
+output:
+html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+#knitr::opts_chunk$set(results = "hold")
+```
+
+### Instructions
+
+Below are problems similar to the exercises done in class relating to the all course content up to and including Week 9. For questions that ask you to produce code, please insert one or a couple code chunks (using Insert button in shortcuts bar above, or on Mac <kbd>CMD</kbd> + <kbd>OPT</kbd> + <kbd>I</kbd>, on PC <kbd>CTL</kbd> + <kbd>ALT</kbd> + <kbd>I</kbd>). 
+
+Put all code you want to execute inside a chunk. When you Knit your document, the code in chunks will be evaluated, and both the code and output will be printed. Any "inline" code (eg `x <- 10`) will not be evaluated, hence `x` in this case will not be created, and cannot be used by any downstream code. 
+
+Please Knit to Word and upload a DOC file to Blackboard.
+
+You can see more information about R Markdown in a Rmd file on Blackboard. 
+
+In this homework, some pieces of code will not Knit properly if not run in the same chunk. Specifically, when you create a plot in a chunk, any further code modifying that plot needs in be in the same chunk where the plot was initially called. Furthermore, during development and testing, you will have run the whole chunk at once for modifications to execute properly (line by line will fail). Finally, if you want to visualize a plot in the Plot tab, you will need to  run the code in the Console (highlight, then CTL + RTN).
+
+This will make some chunks rather lengthy, so please begin commenting your code by inserting a `#` on lines above the code text or after the code text on the same line. See Example Problem below. Any other comments that you think will be useful will be appreciated. Furthermore, please title your code chunks in the curly braces in the chunk header to indicate which problems are being addressed in each chunk. See the example below.
+
+### Example Problem
+
+1. Create an integer vector `p` from 1 to 10 incrementing by 1. 
+```{r Problem 1}
+p <- 1:10 
+```
+2. Create an integer vector `prev` that reverses the elements of `p`
+```{r Problem 2}
+prev <- rev(p)
+```
+3. Given a vector `x`, make a vector `x2` for which each element is the square of the correponding element in `x`. 
+4. Make a scatterplot relating `x` to `x2`.
+5. Title the plot "Example Plot". 
+
+```{r Problems 3-5, fig.height=3, fig.width=3}
+# Problem E.3: Make Vectors.
+x <- 1:10; x2 <- x ^ 2 
+
+# Problem E.4: Create scatter plot of x against x2
+plot(x, x2)
+
+# Problem E.5. Add title to scatter plot
+title(main="Example Plot") # axis labels left as default
+```
+
+
+### Preliminary
+
+Clear all objects from your global environment.
+
+### Problems
+
+##### 10.1: Looping and Vectorization Practice (From Lecture Notes)
+
+Exercise 50. Create a function `pair.prod()` that takes two numeric vectors `x` and `y` as arguments and returns a matrix showing the pair-wise products of elements in each vector. Eg `pair.prod(x=1:2, y=4:5)` would return `matrix(c(4, 8, 5, 10), nrow=2)`. Use nested looping functions.
+
+Exercise 51: Use `combn()` to perform pairwise linear regressions for all measurement variables in `iris`. Bonus: Modify your code from 51 to make a vector `reg.coef` that holds the regression coefficients for all pairwise variables. See Values section of help file for `lm()`. Hint: Look at the data structure returned by a call to `combn()` when `FUN = NULL` and `simplify = FALSE`. 
+
+Exercise 52: Find a vectorized solution to determine the coefficient of variation (sd / mean) for all measurement variables in `iris`. 
+
+Exercise 53: Create a matrix showing the pairwise products of the standard deviations of each measurement variable in `iris`.
+
+Exercise 54: Without using `cor()` create a correlation matrix showing the Pearson product-moment correlation between all measurement variables in `iris`. Hint: cor_xy = cov_xy / (sd_x * sd_y). Check your solution with `cor()`.
+
+Exercise 55: Create a matrix for `iris` wherein the lower triangle is the covariance among variables, upper triangle is the correlation among variables, and diagonal is the variance of each variable. 
+
+##### 10.2: Estimating Spread
+
+1. Import `warming.csv` as a data frame called `wd`.
+
+2. Create a new variable in `wd` called `diff` that is the difference between the warming and control treatments at each plot. 
+
+3. Use nested looping functions (`lapply()`, `sapply()`, or `apply()`) to determine the pairwise difference between all points in `diff`. There should be 1600 of them. 
+
+4. If you haven't already, modify the code in #3 to return a square difference matrix. Corresponding elements in the upper and lower triangles should differ only in sign and the diagonal should contain all zeros. 
+
+5. Modify the code in #4 to return a half-squared distance matrix, where each value is half of the *squared* difference bewteen all pairwise value combinations: hf-sq-dist = 0.5 * (x1 - x2) ^ 2.
+
+6. Create a numeric vector `pv` containing a single value equal to the sum of all elements in the half-squared distance matrix, then divided by the square of the number of elements in `diff`.
+
+7. Build a function `pop.var()` that takes a single numeric vector `x` as an argument and returns a list, where the first element is the half-squared distance matrix (name it `dist`), and the second element is `p.var` of `x` (as in #6).
+
+
+##### 10.3: The Jacknife
+
+As an estimator of the variance of any sample, the algorithm you wrote in 10.2 may or may not be a biased estimator of the variance in the population from which the sample (such as `diff`) was drawn. That is it may consistently under or over predict the true population variance. The jacknife is a technique similar to the bootstrap that is often used to estimate and allow corrections for such bias. 
+
+1. Choose an appropriate looping function (`lapply()`, `sapply()`, etc.) to call `pop.var()` on all unique subsets of `diff` (from warming.csv) that exclude a single value. Your function call should return only a vector of `pvar` values (name it `jacks`), so you will need to index the list returned by `pop.var` to exclude the half-squared distance matrix (named `dist`).
+
+2. Create a vector `var.diff` that contains a single value that is the difference between the mean of the jacknifed samples and the estimate provided by `pop.var` (subtract the `pop.var()` estimate from the jacknife estimate). 
+
+3. Create a vector `bias` that is the product of `var.diff` and 1 less than the sample size (n - 1) in `diff`. This is an estimate of by how much `pop.var` is over or underestimating the variance.
+
+4. Create a new estimate of the variance by adjusting the output of `pop.var()` the value of `bias`.
+
+5. Compare your original and bias-corrected esimates of the variance to the variance of `diff` calculated using `var()`.
+
+6. Modify the function `pop.var()` to take a second arguement `pop` with a default value of `TRUE`. When `pop = TRUE`, caculate the variance as you have coded it above. When `pop` is `FALSE`, calculate the variance by dividing the sum of the half-squared distance matrix by the square of the sample size minus the sample size (n^2 - n), rather than the square of the sample size. 
+
+7. Use the jacknife to evaluate bias using `pop.var()` on `diff` when `pop = FALSE`. Evaluate the variance of `diff` using `pop = FALSE`, and compare it to the estimate of variane using `var()`.
+
+
+
+
+
+
+
+
+
+
+
+
+

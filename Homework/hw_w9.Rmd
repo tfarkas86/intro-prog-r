@@ -1,0 +1,115 @@
+---
+title: "Week 8 Homework"
+author: "Tim Farkas"
+date: "10/25/2017"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+#knitr::opts_chunk$set(results = "hold")
+```
+
+### Instructions
+
+Below are problems similar to the exercises done in class relating to the all course content up to and including Week 9. For questions that ask you to produce code, please insert one or a couple code chunks (using Insert button in shortcuts bar above, or on Mac <kbd>CMD</kbd> + <kbd>OPT</kbd> + <kbd>I</kbd>, on PC <kbd>CTL</kbd> + <kbd>ALT</kbd> + <kbd>I</kbd>). 
+
+Put all code you want to execute inside a chunk. When you Knit your document, the code in chunks will be evaluated, and both the code and output will be printed. Any "inline" code (eg `x <- 10`) will not be evaluated, hence `x` in this case will not be created, and cannot be used by any downstream code. 
+
+Please Knit to Word and upload a DOC file to Blackboard.
+
+You can see more information about R Markdown in a Rmd file on Blackboard. 
+
+In this homework, some pieces of code will not Knit properly if not run in the same chunk. Specifically, when you create a plot in a chunk, any further code modifying that plot needs in be in the same chunk where the plot was initially called. Furthermore, during development and testing, you will have run the whole chunk at once for modifications to execute properly (line by line will fail). Finally, if you want to visualize a plot in the Plot tab, you will need to  run the code in the Console (highlight, then CTL + RTN).
+
+This will make some chunks rather lengthy, so please begin commenting your code by inserting a `#` on lines above the code text or after the code text on the same line. See Example Problem below. Any other comments that you think will be useful will be appreciated. Furthermore, please title your code chunks in the curly braces in the chunk header to indicate which problems are being addressed in each chunk. See the example below.
+
+### Example Problem
+
+1. Create an integer vector `p` from 1 to 10 incrementing by 1. 
+```{r Problem 1}
+p <- 1:10 
+```
+2. Create an integer vector `prev` that reverses the elements of `p`
+```{r Problem 2}
+prev <- rev(p)
+```
+3. Given a vector `x`, make a vector `x2` for which each element is the square of the correponding element in `x`. 
+4. Make a scatterplot relating `x` to `x2`.
+5. Title the plot "Example Plot". 
+
+```{r Problems 3-5, fig.height=3, fig.width=3}
+# Problem E.3: Make Vectors.
+x <- 1:10; x2 <- x ^ 2 
+
+# Problem E.4: Create scatter plot of x against x2
+plot(x, x2)
+
+# Problem E.5. Add title to scatter plot
+title(main="Example Plot") # axis labels left as default
+```
+
+
+### Preliminary
+
+Clear all objects from your global environment.
+
+### Problems
+
+##### 9.1. Modeling Population Growth
+
+The size of any population that is growing exponentially can be calculated at any time t+1 using the discrete exponential formula: Nt+1 = Nt + rd * Nt. where Nt+1 is the population size one time step into the future, Nt is the population size at the current time step, and rd is the (constant) per capita population growth rate (technically the "discrete growth factor"). 
+
+1. Create a vector `enns` using the discrete exponential formula showing the population size of an organism across 20 time steps with an initial population size of 2 and a growth rate of 1. How would you describe this series?
+
+2. Plot the population sizes in `enns` through time with a line graph. See argument `type` to `plot()`. 
+
+No population can grow exponentially forever because resources are never (rarely?) infinite. The discrete logistic equation elaborates the exponential in #1 by multiplying *rd* by a density-dependence term (1 - Nt/K), where *K* is the carrying capacity (maximum population size attainable given resource availability). Thus, population growth is 0 when Nt = K, is positive if Nt < K, and is negative if Nt > K (assuming *rd* itself is positive).
+
+3. Create a vector `enns.log` using the discrete logistic formula showing the population size of an organism across 30 time steps with an initial population size of 3, growth rate of 0.8, and carrying capacity of 10,000. 
+
+4. Look at the values in `enns.log`, then plot them through time with a line graph. See argument `type` to `plot()`.
+
+5. If you haven't already, code your loop in #3 so that all constants are named and defined outside the loop, then called by name inside the loop, rather than "hard coding" the parameters to the specifications of the problem. The constants should include the initial population size `N0`, `rd`, `K`, and the length of the time series `times`. Now you can change the values saved to the constants to change the population growth parameters more easily. Bonus: Clean up your for loop by defining `Nt` and using it in your formula.  
+
+6. Create a function `exp.pop()` that takes as arguments `N0`, `rd`, and `times`, and returns a vector of population sizes assuming exponential growth. Give `N0` and `rd` defaults of 1, and time no default.
+
+7. Use `sapply()` and `exp.pop()` to plot 9 population growth curves with 9 values of `rd` between starting with 0.1 and incrementing by 0.3. Use an initial population size of 1 with 30 time points for all iterations. Include your loop after the bit of code below that will enable all 9 plots to be viewed in a single window, remove axis labels, and trim white space around each plot. Furthermore set the limits of your y-axis to 1 million using the argument to `plot(..., ylim=c(0, 1000000))`. `...` here represents the three other arguments you will use, namely `x`, `y`, and `type`. Compare the graphs. Is this what you expected?
+
+```{r 1.7, results="hide", echo=FALSE}
+# sets up nice plotting space for visualization 
+par(mfrow=c(3,3), ann=FALSE, mar=c(2, 2, 1, 1)) 
+
+# Your code here
+
+```
+
+8. Create a function `log.pop()` that takes as arguments `N0`, `rd`, `K` and `time`, and returns a vector of population sizes assuming logistic growth. Give `N0` and `rd` defaults of 1, but `K` and `time` no defaults.
+
+9. Use `sapply()` and `log.pop()` to plot 9 population growth curves with 9 values of `rd` between starting with 0.5 and incrementing by 0.35. Use an initial population size `N0` of 1, carrying capacity `K` of 1000, with 40 time points for all iterations. Include your loop after the call to `par()` below. **Don't specify a `ylim` argument to `plot()` this time!** Compare the graphs. Is this what you expected? Bonus: Read May(1974): doi 10.1126/science.186.4164.645 
+
+```{r 1.9, results="hide", echo=FALSE}
+# sets up nice plotting space for visualization 
+par(mfrow=c(3,3), ann=FALSE, mar=c(2, 2, 1, 1)) 
+
+# Your code goes here
+```
+
+10. Create a function `pop.sim()` that generates population data as with `exp.pop()` and `log.pop()`, but that takes an additional argument `type` with a default of `"exp"` to determine whether exponential or logistic growth should be simulated. Set the default for `K` to `NULL`. 
+
+##### 9.2. The Bootstrap
+
+warming.csv contains plant biomass data from a warming experiment in the field where 40 plots were warmed and each paired with nearby control plots. Aboveground biomass of grasses was measured in each of the 80 plots 1 year after the start of experimental warming. 
+
+1. Import `warming.csv` as a data frame called `wd`.
+2. Create a new variable in `wd` called `diff` that is the difference between the warming and control treatments at each plot. 
+3. Use `colMeans()` to create a vector called `tmnt.means` showing the average of `cntl`, `warm`, and `diff` variables. Do you think warming influenced biomass?
+4. Create a vector called `tmnt.sds` showing the standard deivation of `cntl`, `warm`, and `diff` variables. Use `apply()`. Do you think warming influenced biomass? 
+Bonus. Use `cov()` for a vectorized solution. See also `?diag`.
+5. Use `t.test()` to test the hypothesis that the difference between the control and warmed plots is zero. Note: The data are "paired". Do you think warming influenced biomass? 
+6. t-tests assume that data conform roughly to a normal distribution (bell curve), else the t- and p-values may be biased. Use `apply()` to plot the histograms of each variable in `wd`. Are you concerned they may not be normally distributed?
+7. Use `sample()` randomly draw 40 values from `diff` in `wd` *with* replacement. Take the mean of your sample. Execute the code a few times in the Console to get the means of a few different random samples. Are they close to the mean in `tmnt.means`?
+8. Use `sapply()` to create a vector `mean.boot` of 10,000 means of 40 random draws from `diff`, as in #7. 
+9. Calculate the mean and create a histogram of `mean.boot`. Do you think warming influenced biomass?
+10. Use `quantile()` to determine the 99% confidence interval for `mean.boot`. Set `probs = c(0.01, 0.99)`. Do you think warming influenced biomass?

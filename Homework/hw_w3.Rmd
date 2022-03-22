@@ -1,0 +1,56 @@
+---
+title: "Week 4 Homework"
+author: "Tim Farkas"
+date: "9/12/2017"
+output:
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+#knitr::opts_chunk$set(results = "hold")
+```
+
+**Instructions**: Below are problems similar to the exercises done in class relating to the all course content up to and including Week 4. For questions that ask you to produce code, please insert one or a couple code chunks (using Insert button in shortcuts bar above, or on Mac <kbd>CMD</kbd> + <kbd>OPT</kbd> + <kbd>I</kbd>, on PC <kbd>CTL</kbd> + <kbd>ALT</kbd> + <kbd>I</kbd>). 
+
+Put all code you want to execute inside a chunk. When you Knit your document, the code in chunks will be evaluated, and both the code and output will be printed. Any "inline" code (eg `x <- 10`) will not be evaluated, hence `x` in this case will not be created, and cannot be used by any downstream code. 
+
+Please Knit to Word and upload a DOC file to Blackboard.
+
+You can see more information about R Markdown in a Rmd file on Blackboard. 
+
+In this homework, some pieces of code will not Knit properly if not run in the same chunk. Specifically, when you create a plot in a chunk, any further code modifying that plot needs in be in the same chunk where the plot was initially called. Furthermore, during development and testing, you will have run the whole chunk at once for modifications to execute properly (line by line will fail). Finally, if you want to visualize a plot in the Plot tab, you will need to  run the code in the Console (highlight, then CTL + RTN).
+
+This will make some chunks rather lengthy, so please begin commenting your code by inserting a `#` on lines above the code text or after the code text on the same line. See Example Problem below. Any other comments that you think will be useful will be appreciated. Furthermore, please title your code chunks in the curly braces in the chunk header to indicate which problems are being addressed in each chunk. See the example below.
+
+**Example Problem**
+
+1. Create an integer vector `p` from 1 to 10 incrementing by 1. 
+```{r Problem 1}
+p <- 1:10 
+```
+2. Create an integer vector `prev` that reverses the elements of `p`
+```{r Problem 2}
+prev <- rev(p)
+```
+3. Given a vector `x`, make a vector `x2` for which each element is the square of the correponding element in `x`. 
+4. Make a scatterplot relating `x` to `x2`.
+5. Title the plot "Example Plot". 
+```{r Problems 3-5}
+# Problem E.3: Make Vectors.
+x <- 1:10; x2 <- x ^ 2 
+
+# Problem E.4: Create scatter plot of x against x2
+plot(x, x2)
+
+# Problem E.5. Add title to scatter plot
+title(main="Example Plot") # axis labels left as default
+```
+
+
+**Preliminary**: Clear all objects from your global environment.
+
+**Problems**
+
+4.1. 

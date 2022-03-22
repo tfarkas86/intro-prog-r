@@ -1,0 +1,203 @@
+---
+title: "Week 5 Homework"
+author: "Tim Farkas"
+date: "9/12/2017"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+#knitr::opts_chunk$set(results = "hold")
+```
+
+**Instructions**: Below are problems similar to the exercises done in class relating to the all course content up to and including Week 5. For questions that ask you to produce code, please insert one or a couple code chunks (using Insert button in shortcuts bar above, or on Mac <kbd>CMD</kbd> + <kbd>OPT</kbd> + <kbd>I</kbd>, on PC <kbd>CTL</kbd> + <kbd>ALT</kbd> + <kbd>I</kbd>). 
+
+Put all code you want to execute inside a chunk. When you Knit your document, the code in chunks will be evaluated, and both the code and output will be printed. Any "inline" code (eg `x <- 10`) will not be evaluated, hence `x` in this case will not be created, and cannot be used by any downstream code. 
+
+Please Knit to Word and upload a DOC file to Blackboard.
+
+You can see more information about R Markdown in a Rmd file on Blackboard. 
+
+In this homework, some pieces of code will not Knit properly if not run in the same chunk. Specifically, when you create a plot in a chunk, any further code modifying that plot needs in be in the same chunk where the plot was initially called. Furthermore, during development and testing, you will have run the whole chunk at once for modifications to execute properly (line by line will fail). Finally, if you want to visualize a plot in the Plot tab, you will need to  run the code in the Console (highlight, then CTL + RTN).
+
+This will make some chunks rather lengthy, so please begin commenting your code by inserting a `#` on lines above the code text or after the code text on the same line. See Example Problem below. Any other comments that you think will be useful will be appreciated. Furthermore, please title your code chunks in the curly braces in the chunk header to indicate which problems are being addressed in each chunk. See the example below.
+
+**Example Problem**
+
+1. Create an integer vector `p` from 1 to 10 incrementing by 1. 
+```{r Problem 1}
+p <- 1:10 
+```
+2. Create an integer vector `prev` that reverses the elements of `p`
+```{r Problem 2}
+prev <- rev(p)
+```
+3. Given a vector `x`, make a vector `x2` for which each element is the square of the correponding element in `x`. 
+4. Make a scatterplot relating `x` to `x2`.
+5. Title the plot "Example Plot". 
+```{r Problems 3-5}
+# Problem E.3: Make Vectors.
+x <- 1:10; x2 <- x ^ 2 
+
+# Problem E.4: Create scatter plot of x against x2
+plot(x, x2)
+
+# Problem E.5. Add title to scatter plot
+title(main="Example Plot") # axis labels left as default
+```
+
+
+**Preliminary**: Clear all objects from your global environment.
+
+**Problems**
+
+plant_height_data.csv has 60 records, where each record represents one plant, with 10 plants sampled at each of 6 sites. Half of the sites were fertilized twice per week after the first height measurement. Each plant was measured three times, one measurement per 10 days.
+
+5.1. Data Import
+
+1. Import the plant height data and save to `pd`. 
+2. Remove any rows that have missing data. 
+3. Check the structure of the data, including its dimensions and column data types. 
+
+```{r}
+pd <- read.csv("~/Dropbox/UNM R Course/plant_height_data.csv")
+complete.cases(pd) # none!
+str(pd)
+```
+
+5.2. Indexing Review
+
+Remember, you can extract elements of a data structure by passing three distinct data types to square brackets.
+
+* positions, eg `pd[c(1,3,5), ]`,
+* names, eg     `pd[ , c("m1", "m2", "m3")]`, or
+* logicals, eg  `pd[ , c(F, F, F, F, T, T, T)]`
+
+01. Extract `m1`, returning a numeric vector. Check with `class()`
+02. Extract `m1`, returning a data frame.
+03. Extract the fifth element of `m2`.
+04. Predict `pd["m2"][5]`, `pd["m2"][5,1]`, and `pd["m2"][5,2]`
+05. Extract the first, third, and fifth elements of `m2`
+06. Extract the first, third, and fifth elements of `m1`, `m2`, and `m3`
+07. Produce (and look at!) a histogram of `m1`.
+08. Create a logical vector `m1.mean` indicating if each element of `m1` is less than then mean (of `m1`) 
+09. Using a call to `m1.mean`, extract all elements in `m1` less than the mean (of `m1`)
+10. Same as 8, but without using a call to `m1.mean`
+11. Extract all rows for which `m1` is less than the mean (of `m1`)
+12. Extract the elements of `m1`, `m2`, and `m3` for which `m1` is *greater than* the mean.
+13. Extract the elements of `m1`, `m2`, and `m3` for which `m1` is greater than the mean or `m1` is less than 4. 
+14. Extract the elements of `m1`, `m2`, and `m3` for which `m1` is greater than the mean or `m1` is less than the 25% quantile. see `?quantile`.
+
+```{r Indexing Review}
+pd$m1; class(pd$m1) #1
+pd["m1"]; class(pd["m1"]) #2
+pd$m2[5] #3
+pd["m2"][5] # it's a data frame, so needs a row/column syntax! pd["md"][5, ]
+pd$m2[c(1, 3, 5)] #5
+pd[c(1, 3, 5), c("m1", "m2", "m3")] #6
+hist(pd$m1) #7
+m1.mean <- pd$m1 < mean(pd$m1) #8
+pd$m1[m1.mean] #9
+pd$m1[pd$m1 < mean(pd$m1)] #10
+pd[m1.mean, ] #11
+pd[pd$m1 > mean(pd$m1), c("m1", "m2", "m3")] #12
+pd[pd$m1 > mean(pd$m1) | pd$m1 < 4, c("m1", "m2", "m3")] #13
+pd[pd$m1 > mean(pd$m1) | pd$m1 < quantile(pd$m1)[2], c("m1", "m2", "m3")] #14
+```
+
+5.3. Data Exploration
+
+For this exercise, we will try to understand whether and how fertilization influences plant growth, by looking at how plant height changes over time (`m1`, `m2`, `m3`) at different sites. Sites for which `tmnt` == "fert" have been fertilized, and those for which `tmnt` == "cntl" have not. 
+
+1. The following two calls to `hist()` will overlay histograms. 
+
+Create two numeric vectors `m3.cntl` and `m3.fert` in the code chunk below (above the calls to `hist()`) so that the histograms will help you visualize the distribution of plant height data for fertilized and control plots. Describe the data.
+
+```{r}
+m3.cntl <- pd$m3[pd$tmnt == "cntl"]
+m3.fert <- pd$m3[pd$tmnt=="fert"]
+
+hist(m3.cntl, col = "blue", density=60, breaks=10, xlim=c(min(pd$m3) - 1, max(pd$m3) + 1), main="", xlab="plant height (cm)")
+
+hist(m3.fert, col="red", density=60, breaks=10, add=TRUE)
+```
+
+2. Calculate the mean plant height for all plants at each of the three sampling time points. Produce a named vector `pd.means` (ie `names(x)` not == `NULL`) of length == 3. Remark on any trends.
+
+3. Calculate the mean plant height for plants in fertilized and control plots seperately. Combine these means with the means calculated in #1, forming a named matrix (overwrite `pd.means`) with useful row and column names.
+
+```{r 5.3.2 & 5.3.3}
+pd.means.totl <- c(m1 = mean(pd$m1),
+                   m2 = mean(pd$m2), 
+                   m3 = mean(pd$m3))
+
+pd.means.fert <- c(mean(pd$m1[pd$tmnt == "fert"]),
+                   mean(pd$m2[pd$tmnt == "fert"]),
+                   mean(pd$m3[pd$tmnt == "fert"]))
+
+pd.means.cntl <- c(mean(pd$m1[pd$tmnt == "cntl"]),
+                   mean(pd$m2[pd$tmnt == "cntl"]),
+                   mean(pd$m3[pd$tmnt == "cntl"]))
+
+pd.means <- rbind(totl = pd.means.totl, 
+                  fert = pd.means.fert, 
+                  cntl = pd.means.cntl)
+```
+
+4. It turns out that fertilization not only makes these plants taller, but also bushier, so that the relationship between plant height and aboveground biomass changes when fertilized. Under control conditions, plants weigh 0.5 grams per centimeter of height (biomass = 0.5 x height) on average. Under fertilized conditions, the equation is: biomass = 0.5 x height ^ 2.
+
+Create three new variables in `pd` named `m1.biom`, `m2.biom`, and `m3.biom` that convert plant height to aboveground biomass. 
+
+```{r}
+# our classic indexing approach
+pd[ , c("m1.biom", "m2.biom", "m3.biom")] <- NA # make the variables
+
+pd[pd$tmnt == "cntl", c("m1.biom", "m2.biom", "m3.biom")] <-
+  pd[pd$tmnt == "cntl", c("m1", "m2", "m3")] * .5
+
+pd[pd$tmnt == "fert", c("m1.biom", "m2.biom", "m3.biom")] <- 
+  pd[pd$tmnt == "fert", c("m1", "m2", "m3")] ^ 2 * .5
+```
+
+5. Calculate the mean plant biomass for plants in fertilized and control plots seperately. Combine these means with the means calculated in #1 & 2, forming a named matrix (overwrite `pd.means`) with useful row and column names. Hint: copy and paste.
+
+```{r}
+pd.biom.fert <- c(mean(pd$m1.biom[pd$tmnt == "fert"]),
+                   mean(pd$m2.biom[pd$tmnt == "fert"]),
+                   mean(pd$m3.biom[pd$tmnt == "fert"]))
+
+pd.biom.cntl <- c(mean(pd$m1.biom[pd$tmnt == "cntl"]),
+                   mean(pd$m2.biom[pd$tmnt == "cntl"]),
+                   mean(pd$m3.biom[pd$tmnt == "cntl"]))
+
+pd.means <- rbind(pd.means, 
+                  biom.fert = pd.biom.fert, 
+                  biom.cntl = pd.biom.cntl)
+```
+
+6. `barplot()` takes a numeric vector and produces a bar chart, where the value of each element creates a bar with a height equal to the value, eg `barplot(c(a=1, b=2))`.
+
+Produce a bar chart that compares plant biomass in the control vs. fertilized plots at the 3rd time point. Feel free to add axis labels and error bars with `arrows()` if you like. 
+
+```{r}
+barplot(pd.means[c("biom.cntl", "biom.fert") ,"m3"]) # just the plot
+title(ylab="aboveground biomass (g)", xlab="treatment") # adding a y-axis label
+```
+
+7. Recall our use of `t.test()` to test the hypothesis that two samples are drawn from the same population, ie the true difference between their means is 0. Use `t.test` to compare plant height at the third time point between the fertilization treatments. Do this again for plant biomass. In both cases, let's assume the variance of the two samples is equal (see help file). Do the results differ (look at t- and p-values)? Why or why not? If they do, how do you feel about that?
+
+```{r}
+t.test(x=pd$m3[pd$tmnt=="cntl"], y=pd$m3[pd$tmnt=="fert"], var.equal=TRUE)
+t.test(x=pd$m3.biom[pd$tmnt=="cntl"], y=pd$m3.biom[pd$tmnt=="fert"], var.equal=TRUE)
+```
+
+8. Below is the code for linear regressions to test the same hypothesis. How will the results differ?
+
+```{r}
+summary(lm(m3 ~ tmnt, data=pd))
+summary(lm(m3.biom ~ tmnt, data=pd))
+```
+
+
+

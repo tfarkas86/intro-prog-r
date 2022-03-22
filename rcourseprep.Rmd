@@ -1,0 +1,318 @@
+---
+title: "R Course Notes"
+author: "Tim Farkas"
+date: "5/11/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### The R Console
+
+The R *Console* is an interactive workspace where you can execute R expressions line-by-line in real time.
+
+`>` indicates that a new expression can be executed.
+
+`+` indicates that an expression has not yet been completed.
+
+* Either finish the expression, or press  <kbd>ESC</kbd> to exit.
+
+Each line of executed code is saved to the **history**, and can be accessed quickly using the <kbd>UP</kbd> arrow, or in the History window.
+
+The Console can be cleared with  <kbd>CTL</kbd> + <kbd>L</kbd>.
+
+...
+
+### Objects & Functions
+
+> "Everything that exists in R is an object.  
+> Everything that happens in R is a function call"  
+> - John Chambers
+
+### Data Types
+
+**Logical** data are `TRUE` or `FALSE`, `T` or `F` -- spelling out whole word recommended.
+
+**Double** data are real-number **numeric** with high maximum and larger memory allocation; default numeric data type.
+
+**Integer** data are whole-number **numeric** with a low maximum and smaller memory allocation; specified with an "L" following a number: `384L`.
+
+**Character**: **strings** of text, including letters, numbers, symbols.  
+
+* A single `character` datum can be a string of many "characters", enclosed in single or double quotes; eg. `"Hello, world!"`.
+
+* double quotes are good style, because they are more visible than single quotes.
+
+There are four special data values: 
+
+* `NA`: missing value, can be of any type
+
+* `NaN`: "not a number", type **double** only; eg. `1 / 0` evaluates to `NaN`
+
+* `Inf`: infinity, type **double** only
+
+* `NULL`: the null object indicates absense of any object, and has no formal type
+
+### Variable Assignment
+
+To save for future use, **bind** them to names using either `<-` or `=`.
+
+* `<-` is peferred "R style"; `->` for rightward assignment; <kbd>ALT</kbd> + <kbd>-</kbd> keyboard shortcut.
+
+* `=` is preferred within function calls (more soon); leftward assignment only.
+
+Name prohibitions:
+
+* cannot begin with numbers or special characters
+* beginning with `.` will create hidden objects
+
+Style points:
+
+* keep names as short and descriptive as possible.
+
+* begin only with lowercase letters, eg. `treedata` not `Treedata`.
+
+* use capital letters, `.`, and `_` to separate words or ideas.
+    + eg. `treeData`, `tree.data`, `tree_data`. 
+    
+Two important points on variable names:
+
+1. R is *always* case sensitive, eg. `treedata` and `treeData` are different!
+
+2. whitespace *cannot* divide object names, numbers, or the assignment function.
+
+  + eg. `tree data` or `20 17` both throw an **error** (more on errors soon).
+  + `x <- 3` and  `x < - 3` give very different results!
+
+### Functions
+
+**Functions** are objects that invoke procedures to create new or modify existing objects
+
+Functions have three important components:
+
+1. a name used to specify the function to be called, and 
+
+2. **formal arguments** to specify target objects and/or desired parameters of the procedure.
+
+3. a **body** of code, accessable but hidden, usually written in R, but often in C.
+
+The formal arguments of a function are named by the programmer, and must be specified if they do not have default values (but they often do!).
+
+Access the *help file* to see a description of the function and its arguments: `?log`
+
+To call a function, use this syntax: `function(arg1, arg2, arg3)`.
+
+**Calling arguments** supplied to the function by the user, are matched to formal arguments first by name, then by position
+
+* these are all the same call, in order from most to least explicit: `log(x=100, base=10)`, `log(base=10, x=100)`, `log(x=100, 10)`, `log(100, base=10)`, `log(base=10, 100)`, `log(100, base=10)`, `log(100, 10)`
+
+* names will also match partially: `log(100, b=10)`, which is also good coding style, but I prefer `log(100, base=10)` 
+
+* *always* use `=` to specify arguments, else the argument's object will be defined everywhere, not just within the function **environment**
+
+* functions will use **default values** if they exist and the user does not specify their own values; see the help file
+
+* often, you want to save the object **returned** by a function: `log.x <- log(100, base=10)`
+
+* whitespace, even line returns, *can* separate components of a function call, which can be good style: 
+
+```{r, eval=FALSE}
+
+log (x = 100, 
+     base = 10)
+
+```
+### Operators
+
+Operators, like `+`, are **infix** functions (as opposed to prefix functions like `log()`), where the function call is *in*serted between two arguments.
+
+Operators can be evaluated as objects by wrapping in ticks
+
+#### Arithmetic Operators
+
+* `+`, `-`, `*`, and `/` work as expected
+
+*`^` is the power function
+
+* use `(` function (and close with `)`) to specify non-standard order of operations
+
+#### Logical Operators
+
+The logical operators compare object values, and return logical vectors
+
+Comparing numeric or character data:
+
+* `>`, `<`, `>=`, `<=`, and `==` with *two* equal signs, unless
+
+* prefix with `!` to negate; eg. `x != 2.5`
+
+Comparing logical data:
+
+* `&` for AND, `|` for OR, both elementwise
+    + compares each element of left object to each element of right object
+    + longer object must be multiple of shorter object; eg. `c(F, T, F) & T`
+    + 0 coerced to FALSE, all other numeric data to TRUE
+    + eg. use to determine if object is in range: `(x >= 0) & (x <= 1)`
+
+* `&&` for AND, `||` for OR, compare left to right and return logical vector of length 1
+
+### Errors and Warnings
+
+The function programmers have built in requirements for function calls, and will return **error messages** when those requirements are not met.
+
+* Errors indicate the function has failed to run, and will not return objects.
+
+* Error messages vary in interpretabiity -- try to read and understand them, then start Googling
+
+    + `log(base=10)`, `sqrt("a")`, and `c(T, F, T) | c(T, F)` give unusually helpful messages
+    
+Functions will also return **warning messages** if the programmer thinks the function output might not be as the user expects.
+
+* Warnings indicate the function has run, and an object has been returned, but don't ingnore the warning! Sometimes could be very wrong, or not.
+
+### Data Structures
+
+#### Atomic Vectors
+
+**Atomic vectors**: one-dimensional, homogenous value set of any one data type
+
+Atomic vectors are the core data structure in R, so prioritize learning to create and maipulate them!
+
+Creating atomic vectors: 
+
+* `c()` combines the objects provided as calling arguments
+    + can provide raw objects or variable names: eg. `c(1, 2, 3, x, y, z)`
+* `seq()` creates a numerical sequence from and/or to user specified values with a given intervals and total length
+* `:` operator creates integer sequence, eg. `0:10`, you will use this often!
+* `rep()` repeats the elements of a vector; very flexible -- see formal arguments
+* `rev()` reverses the elements of a vector
+
+**Attributes** of atomic vectors:
+
+* the elements of an atomic vector can be given **names** as a special attribute 
+    + assign them inside the call to `c()`; eg. `c("a" = 1, "b" = 2, "c" = 3)`
+    + or with `names()`; eg. `names(x) <- c("a", "b", "c")`.
+
+**Coercion**: The elements of atomic vectors *must* be of the same type, and will be **coerced** to the most flexible type if not provided as such.
+
+* flexibility: character > double > integer > logical
+
+Assessing atomic vectors:
+
+* `length()` will return the number of elements 
+* `typeof()` will return the data type
+* check on specific data types with `is.character()`, `is.numeric()`, `is.integer()`, `is.double()`, `is.logical()`
+* `is.atomic` will check if an object is an atomic vector
+* `names()` will return the character vector of element names
+
+#### Factors
+
+**Factors** are atomic vectors that can only take on pre-specified values, making them useful for representing categorical data.
+
+Factors present to the user as character strings without quotes. But they are actually integer vectors, for which each integer value is associated with a character-string `level`, and the level printed instead of the integer. 
+
+Creating factors:
+
+* coerce atomic vectors with `as.factor()`, or use `factor()`
+* factors are often created from character vectors by default in R -- this can be useful, but is a classic source of frustration!
+
+Attributes of factors:
+
+* factors have a `levels` attribute that is a character string of pre-determined values
+* set or change the level values with `levels()`; eg. `levels(x) <- c("A", "B")`
+* factors have a `class` attribute set to "factor" 
+
+Assessing factors: 
+
+* `is.factor()` or `class()` to determine if an object is a factor
+* `levels()` returns levels attribute as character string
+* `nlevels()` returns number of levels 
+
+#### Lists
+
+**Lists** are one-dimensonal vectors that can be heterogenous in data type
+
+The elements of a list can themselves differ in data type, length, and dimensionality, and can be of any data structure (even lists!). Nevertheless, lists *per se* are 1D data structures.
+
+Creating lists:
+
+* `list()` combines elements into a list; used just like `c()`
+* `rep()` and `rev()` work as expected 
+* calling `c()` on multiple lists will combine their elements into one list
+* flatten a list to an atomic vector using `unlist()`, but expect coersion!
+* use `list()` or `names()` to assign names to each element as with atomic vectors
+
+Assessing lists:
+
+* use `str()` ("structure") to see the number of elements in a list, and the length and data type of each of its elements; very useful!!
+* use `is.list()` or `typeof()` to determine whether an object is a list
+* get names as with atomic vectors
+
+#### Arrays and Matrices
+
+**Arrays** are n-dimensional, homogenous value sets.
+
+**Matrices** are a special array with two dimensions.
+
+Creating arrays and matrices:
+
+* `array()` and `matrix()` 
+    + both take an atomic vector as a `data` argument.
+    + `array()` takes an atomic integer vector to specify dimensions.
+    + `matrix()` takes `nrow` and `ncol` arguments. 
+    + both fill elements (rows) of each column first, unless `byrow = TRUE`.
+    + both will repeat or omit elements of the data if dimensions do not match perfectly.
+* combine atomic vectors, matrices, or arrays with `rbind()`, `cbind()`, and `abind()` for row-wise, column-wise, and multi-dimensional combination, respectively.
+* transpose a matrix with `t()`, and permute an array with `aperm()`
+
+Attributes of matrices and arrays:
+
+* all matrices and arrays have a `dim` (dimension) attribute indicating the length of each dimension
+* names can be assigned to rows and columns using `rownames()` and `colnames()`, or to any dimension using `dimnames()`
+
+Assessing matrices and arrays:
+
+* check dimensions with `dim()`, `nrow()`, `ncol()`. 
+* check types with `typeof()`, `class()`, `is.matrix()` and `is.array()`.
+
+#### Data Frames
+
+**Data Frames** are lists of atomic vectors with the same length
+
+Data frames present to the user as a matrix, not as a list, and character vectors are presented without quotes.
+
+Attributes of Data Frames: 
+
+* `names` is character string of column names; set with `names()` or `colnames()`
+* `row.names` is character string of row names; set with `row.names()`
+* `class` is set to "data.frame"
+
+Creating Data Frames: 
+
+* `data.frame()` performs column-wise combination of vectors, matrices, or data frames
+    + add column names in function call; eg. `data.frame(y=0:10, x=seq(0, 100, by=10))`
+* `cbind()` also does column-wise combination, but
+    + at least one combined object must be a data frame, or else it will default to a coerced matrix
+* `rbind()` performs row-wise combination, but
+    + at least one combined object must be a data frame
+    + column names of data frames and matrices must not conflict 
+
+### Attributes
+
+Attributes are supplementary properties applicable to all objects that provide object metadata.
+
+Creating attributes:
+
+* use `attr()` or `structure()`; eg, `attr(student1, "R knowledge") <- "rapidly growing"`
+
+Assessing attributes: 
+
+* `attr()` for specific attributes, or `attributes()` to see them all
+
+Attributes are removed from objects when they are modified, except for the three special attributes already encountered:
+
+* name attributes
+* dimension attributes
+* class attributes

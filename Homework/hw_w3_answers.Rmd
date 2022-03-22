@@ -1,0 +1,215 @@
+---
+title: "Week 3 Homework"
+author: "Tim Farkas"
+date: "9/12/2017"
+output:
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+#knitr::opts_chunk$set(results = "hold")
+```
+
+**Instructions**: Below are problems similar to the exercises done in class relating to the all course content up to and including Week 2. For questions that ask you to produce code, please insert a new code chunk after each sub-problem (using Insert button in shortcuts bar above, or on Mac <kbd>CMD</kbd> + <kbd>OPT</kbd> + <kbd>I</kbd>, on PC <kbd>CTL</kbd> + <kbd>ALT</kbd> + <kbd>I</kbd>). 
+
+Put all code you want to execute inside a chunk. When you Knit your document, the code in chunks will be evaluated, and both the code and output will be printed. Any "inline" code (eg `x <- 10`) will not be evaluated, hence `x` in this case will not be created, and cannot be used by any downstream code. 
+
+Please Knit to Word and upload a DOC file to Blackboard.
+
+You can see more information about R Markdown in a Rmd file on Blackboard. 
+
+In this homework, some pieces of code will not Knit properly if not run in the same chunk. Specifically, when you create a plot in a chunk, any further code modifying that plot needs in be in the same chunk where the plot was initially called. Furthermore, during development and testing, you will have run the whole chunk at once for modifications to execute properly (line by line will fail). 
+
+This will make some chunks rather lengthy, so please begin commenting your code by inserting a `#` on lines above the code text or after the code text on the same line. See Example Problem below. Any other comments that you think will be useful will be appreciated. Furthermore, please title your code chunks in the curly braces in the chunk header to indicate which problems are being addressed in each chunk. See the example below.
+
+**Example Problem**
+
+1. Create an integer vector `p` from 1 to 10 incrementing by 1. 
+```{r Problem 1}
+p <- 1:10 
+```
+2. Create an integer vector `prev` that reverses the elements of `p`
+```{r Problem 2}
+prev <- rev(p)
+```
+3. Given a vector `x`, make a vector `x2` for which each element is the square of the correponding element in `x`. 
+4. Make a scatterplot relating `x` to `x2`.
+5. Title the plot "Example Plot". 
+```{r Problems 3-5}
+# Problem E.3: Make Vectors.
+x <- 1:10; x2 <- x ^ 2 
+
+# Problem E.4: Create scatter plot of x against x2
+plot(x, x2)
+
+# Problem E.5. Add title to scatter plot
+title(main="Example Plot") # axis labels left as default
+```
+
+
+**Preliminary**: Clear all objects from your global environment.
+
+**Problems**
+
+3.1. The function `summary()` produces a named vector with some basic summary statistics when provided with a numeric vector. Given `x <- rnorm(10000)`,
+
+1. Create a named vector `sum.x` of summary statistics for `x`. 
+
+2. Add an element to `sum.x` named `n` indicating the number of elements in `x` (the sample size).
+
+The function `quantile()` determines the location of quantiles at any given probabilities (provided as a numeric vector to argument `probs`). Eg. `quantile(x, probs=c(.25, .5, .75)` will return the 1st, 2nd, and 3rd *quartiles* of `x`. 
+
+3. Formally compare the output of `quantile(x, probs=c(.25, .5, .75)` and `summary(x)`, producing a named logical vector (of length = 3). Hint: `quantile()` as specified here will return the 1st quartile, median (2nd quartile), and 3rd quartile. 
+
+4. Modify `sum.x` to include the .01, .05, .95, and .99 quantiles, and name them `Qu.01`, `Qu.05`, `Qu.95`, and `Qu.99`, respectively.
+
+5. Reorder `sum.x` as follows: `c("n", "Min.", "Max.", "Mean", "Qu.01", "Qu.05", "1st Qu.", "Median", "3rd Qu.", "Qu.95", "Qu.99")`. Hint: I have provided the code for this character vector for your convenience.
+
+```{r 3.1.1-5}
+x <- rnorm(10000)
+sum.x <- summary(x); sum.x #1
+sum.x["n"] <- length(x); sum.x #2
+#3
+sum.x[c("1st Qu.", "Median", "3rd Qu.")] == quantile(x, probs=c(.25, .5, .75))
+#4
+xqs <- quantile(x, probs=c(.01, .05, .95, .99))
+sum.x[c("Qu.01", "Qu.05", "Qu.95", "Qu.99")] <- xqs; sum.x
+#5
+sum.x <- sum.x[c("n", "Min.", "Max.", "Mean", "Qu.01", "Qu.05", "1st Qu.", "Median", "3rd Qu.", "Qu.95", "Qu.99")]; sum.x
+sum.x <- round(sum.x, digits=1); sum.x
+```
+
+6. Repeat problems 1 through 4 five times (copy and paste is your friend :), but summarize 
+
+* all values in `x` less than 0,
+* those values in `x` less than -1 and those greater than 1 
+* every other value in `x`, incluing the 1st value (but not the 2nd)
+* only those values in `x` that, when rounded down to the nearest integer, are divisible by 2. See `?floor()`, and modulo operator `%%`.
+
+```{r 3.1.6: x < 0}
+x <- rnorm(10000)
+x <- x[x < 0]
+sum.x <- summary(x); sum.x #1
+sum.x["n"] <- length(x); sum.x #2
+#3
+sum.x[c("1st Qu.", "Median", "3rd Qu.")] == quantile(x, probs=c(.25, .5, .75))
+#4
+xqs <- quantile(x, probs=c(.01, .05, .95, .99))
+sum.x[c("Qu.01", "Qu.05", "Qu.95", "Qu.99")] <- xqs; sum.x
+#5
+sum.x <- sum.x[c("n", "Min.", "Max.", "Mean", "Qu.01", "Qu.05", "1st Qu.", "Median", "3rd Qu.", "Qu.95", "Qu.99")]; sum.x
+sum.x <- round(sum.x, digits=1); sum.x
+```
+```{r 3.1.6 1 < x < -1}
+x <- rnorm(10000)
+x <- x[x < -1 | x > 1]
+sum.x <- summary(x); sum.x #1
+sum.x["n"] <- length(x); sum.x #2
+#3
+sum.x[c("1st Qu.", "Median", "3rd Qu.")] == quantile(x, probs=c(.25, .5, .75))
+#4
+xqs <- quantile(x, probs=c(.01, .05, .95, .99))
+sum.x[c("Qu.01", "Qu.05", "Qu.95", "Qu.99")] <- xqs; sum.x
+#5
+sum.x <- sum.x[c("n", "Min.", "Max.", "Mean", "Qu.01", "Qu.05", "1st Qu.", "Median", "3rd Qu.", "Qu.95", "Qu.99")]; sum.x
+sum.x <- round(sum.x, digits=1); sum.x
+```
+```{r, 3.1.6 skip 1}
+x <- rnorm(10000)
+x <- x[c(TRUE, FALSE)]
+sum.x <- summary(x); sum.x #1
+sum.x["n"] <- length(x); sum.x #2
+#3
+sum.x[c("1st Qu.", "Median", "3rd Qu.")] == quantile(x, probs=c(.25, .5, .75))
+#4
+xqs <- quantile(x, probs=c(.01, .05, .95, .99))
+sum.x[c("Qu.01", "Qu.05", "Qu.95", "Qu.99")] <- xqs; sum.x
+#5
+sum.x <- sum.x[c("n", "Min.", "Max.", "Mean", "Qu.01", "Qu.05", "1st Qu.", "Median", "3rd Qu.", "Qu.95", "Qu.99")]; sum.x
+sum.x <- round(sum.x, digits=1); sum.x
+```
+```{r, 3.1.6 div 2}
+x <- rnorm(10000)
+x <- x[floor(x) %% 2 == 0 & floor(x) != 0] # here, also excluding 0s (not divisible by 2)
+sum.x <- summary(x); sum.x #1
+sum.x["n"] <- length(x); sum.x #2
+#3
+sum.x[c("1st Qu.", "Median", "3rd Qu.")] == quantile(x, probs=c(.25, .5, .75))
+#4
+xqs <- quantile(x, probs=c(.01, .05, .95, .99))
+sum.x[c("Qu.01", "Qu.05", "Qu.95", "Qu.99")] <- xqs; sum.x
+#5
+sum.x <- sum.x[c("n", "Min.", "Max.", "Mean", "Qu.01", "Qu.05", "1st Qu.", "Median", "3rd Qu.", "Qu.95", "Qu.99")]; sum.x
+sum.x <- round(sum.x, digits=1); sum.x
+```
+
+3.2. The function `hist()` plots a histogram, given a vector of numeric data, but also returns a list of values associated with the data (see Value section in `?hist`). By default, calling `hist()` will plot the histogram, and will not print the list, but you can save the list as an object to work with it after plotting. 
+
+```{r, results='hide'}
+set.seed(1986) # sets the number generator so results will never change
+x <- rnorm(100000) # generate 100000 random draws from a normal distribution
+hx <- hist(x); hx # plot histogram and save histogram properties to hx.
+x.mean <- mean(x) # 1
+abline(v=x.mean, col="red", lty=2, lwd=2) #2-3
+hx2 <- hx[1:4] # 4
+plot(x = hx2[["mids"]], y = hx2[["counts"]]) # need double brackets! # 5
+lines(x = hx2$mids, y = hx2$counts) # or the $ works great :) # 6
+```
+
+1. Determine the arithmetic mean of `x` and save to `x.mean`.
+
+2. In the code chunk above, use the function `abline()` to draw a vertical line on the histogram showing the mean of `x`. Hint: You only need to use one argument to `abline()`; see `?abline`. 
+
+3. For ease of visualization, modify the code from #2 to make the line red, dotted and thick, by adding `col = "red"`, `lty = 2`, and `lwd = 2` as arguments to `abline()`.
+
+Optional Bonus: For an exhaustive list of graphical parameters, see `?par`. Make your plot as fancy as you like by passing arguments described in `par()` to `hist()`. Notice the `...` argument to `hist()`. You can add axis labels, a title, change axis dimensions, shading of the histogram bars, etc, etc, etc.
+
+4. Using square bracket notation, make a new list `hx2` including only the first four elements of `hx`.
+
+The function `plot()` takes two vectors and plots them against one another. eg: `plot(x = 1:10, y = (1:10) ^ 2)`. 
+
+5. Using `hx2` and square bracket notation, plot the frequency of values in a "bin" (`counts`) against the center of each bin (`mids`).
+
+The function `lines()` addes lines to an existing plot. 
+
+6. In the code chuck opened for #6, connect the dots on the plot relating frequency to values (use `lines()`), this time subsetting `hx2` using `$` notation.
+
+7. Repeat 1-6, but make the frequency distribution smoother by increasing the number of bins from the default (a complex calculation ~= 20), to 50. See `breaks` argument to `hist()`.
+
+```{r, 3.2.7: repeat smoother}
+hx <- hist(x, breaks=50); hx # plot histogram and save histogram properties to hx.
+x.mean <- mean(x) # 1
+abline(v=x.mean, col="red", lty=2, lwd=2) #2-3
+hx2 <- hx[1:4] # 4
+plot(x = hx2[["mids"]], y = hx2[["counts"]]) # need double brackets! # 5
+lines(x = hx2$mids, y = hx2$counts) 
+```
+
+Optional Bonus: Given `y <- rnorm(100000, 2, .1)`, make a new plot showing the distributions of both `x` and `y`. Consider plotting the `density` of `x` and `y`, instead of the `counts`, and use line color, pattern, and/or width to distinguish the distributions. Hint: I recommend making a variable named `hy`. If you want to draw points for `y` on the plot, see `?points`.
+
+```{r, BONUS}
+hx <- hist(x, breaks=50, plot=FALSE)
+#x.mean <- mean(x) 
+#abline(v=x.mean, col="red", lty=2, lwd=2) 
+hx2 <- hx[1:4] 
+
+# I had to play with the height of the y axis to get the y curve to visualize 
+# properly (ylim), and decided to remove the points, so change the plot type to "n" so that they points wouldn't show
+plot(x = hx2[["mids"]], y = hx2[["density"]], ylim=c(0, 4), type="n")
+lines(x = hx2$mids, y = hx2$density) 
+
+## do all over again for new data y
+
+y <- rnorm(100000, 2, .1)
+hy <- hist(y, breaks=50, plot=FALSE) 
+#y.mean <- mean(x) # 1
+# abline(v=x.mean, col="red", lty=2, lwd=2) #2-3
+hy2 <- hy[1:4] # 4
+# points(x = hy2[["mids"]], y = hy2[["density"]]) 
+lines(x = hy2$mids, y = hy2$density, col="red", lwd=2)
+
+
+```
+

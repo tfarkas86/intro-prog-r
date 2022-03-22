@@ -1,0 +1,300 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r Exercises 40-42}
+first.pos <- function(x) {
+  
+  fe <- x[1]
+  
+  #if(!is.numeric(fe)) return("first element is not numeric")
+  
+  if(fe < 0)  {"first element is negative"
+    #} else if(fe == 0) {"first element is zero"
+  } else if(fe > 0)   "first element is positive"
+  
+}
+
+first.pos(x=1)
+```
+```{r Exercise 43}
+my.sum <- function(x, type="mean") {
+  
+  if(!is.numeric(x)) return("x is not numeric, and cannot be summarized")
+  
+  ms <- switch(type, mean=mean(x), 
+               med= median(x), 
+               var= var(x), 
+               sd=  sd(x))
+  
+  names(ms) <- type
+  return(ms) 
+  
+}
+```
+
+```{r Exercise 44}
+aq <- airquality
+ifelse(is.na(aq$Solar.R), "missing", "not missing") #1
+ifelse(is.na(aq$Solar.R), "missing", ifelse(aq$Solar.R <= mean(aq$Solar.R, na.rm = TRUE), "low", "high")) #2
+aq$Ozone[is.na(aq$Ozone)] <- -1 #3
+aq$Ozone <- ifelse(is.na(aq$Ozone), -1, aq$Ozone) #4
+ifelse(aq$Wind > mean(aq$Wind, na.rm=TRUE), aq$Ozone, aq$Solar.R) #5
+```
+
+```{r Exercise 45}
+for(i in 1:10) print(rnorm(20)) #1
+for(i in 1:10) print(mean(rnorm(20))) #2
+
+ndist.means <- vector("numeric", length=10) #3.1
+for(i in 1:10) ndist.means[i] <- mean(rnorm(20)) #3.2
+
+fib <- vector("numeric", length=100) #4.1
+fib[1:2] <- 1 #4.2
+for(i in 3:100) fib[i] <- fib[i-2] + fib[i-1] #4.3
+
+fib <- vector("numeric", length=100) # 4 alternate
+for(i in 1:100) { # 4 neater, but slower
+  
+  if(i < 3) fib[i] <- 1
+  else fib[i] <- fib[i-2] + fib[i-1]
+  
+}
+
+#5
+rand <- vector("numeric", length=10)
+rsd <- sd(rand)
+count <- 0
+
+while(rsd < 0.999 | rsd >= 1.001) {
+  
+  rand <- rnorm(10)
+  rsd <- sd(rand)
+  count <- count + 1
+  if(rsd >= 0.999 & rsd < 1.001) print(count)
+  
+}
+```
+
+```{r Exercise 46}
+lapply(1:10, FUN=function(x) rnorm(20)) #1
+lapply(1:10, FUN=function(x) mean(rnorm(20))) #2
+lapply(seq(10, length.out=20, by=10), rnorm) #3
+apply(iris[1:4], MARGIN=2, sd) #4
+lapply(iris[1:4], sd) #4 alternate
+apply(iris[1:4], MARGIN=2, function(i) sd(i) / (length(i) - 1)) #5
+```
+
+```{r Exercises 47 & 48}
+do.call(cbind, lapply(1:5, function(i) rnorm(20))) #47
+
+iris.l <- split(iris, f=iris$Species) #1
+iris.l[[3]] <- iris.l[[3]][-nrow(iris.l[[3]]),] #2
+unsplit(iris.l, iris$Species) #3 oh no!
+do.call(rbind, iris.l) #3 do.call to the rescue
+```
+
+```{r Exercise 47}
+mapply(rnorm, n=1:5, mean=-2:2, sd=1:5)
+```
+
+```{r Exercise 48}
+do.call(cbind, lapply(1:5, rnorm, n=20, mean=5)) #1
+sapply(1:5, rnorm, n=20, mean=5) #1 w/o do.call
+do.call(cbind, lapply(seq(0, 20, by=5), rnorm, n=20)) #2
+sapply(seq(0, 20, by=5), rnorm, n=20) #2 w/o do.call
+do.call(cbind, mapply(rnorm, n=20, mean=seq(0, 20, 5), sd=1:5, SIMPLIFY=FALSE))
+mapply(rnorm, n=20, mean=seq(0, 20, 5), sd=1:5) #3 w/o do.call
+```
+
+```{r Exercise 49, results="hide"}
+iris.lrs <- lapply(1:4, FUN=function(i) {
+  
+  lapply(1:4, FUN=function(j) {
+    
+    lm(iris[ , i] ~ iris[ , j])
+    
+  })
+})
+
+# Bonus
+iris.lrs <- lapply(levels(iris$Species), FUN=function(i) {
+  
+  lapply(1:(ncol(iris)-1), FUN=function(j) {
+    
+    lapply(1:(ncol(iris)-1), FUN=function(k) {
+      
+      lm(iris[iris$Species == i, j] ~ iris[iris$Species == i, k])
+      
+    })
+    
+  })
+  
+})
+
+```
+
+```{r Exercise 50}
+pair.prod <- function(x, y) {
+  
+  mat <- sapply(1:length(x), FUN=function(i) {
+    
+    sapply(1:length(y), FUN=function(j)  x[i] * y[j])
+    
+  })
+  
+  mat <- t(mat)
+  dimnames(mat) <- list(x, y)
+  return(mat)
+  
+}
+
+pair.prod(1:3, 4:6)
+```
+
+```{r Exercise 51}
+combn(iris[ , 1:4], m=2, FUN=lm, simplify=FALSE)
+
+combn(iris[,1:4], m=2, simplify=FALSE) # hint
+reg.coef <- combn(iris[ , 1:4], m=2, simplify=TRUE, # Bonus
+                  FUN=function(i) lm(i[, 1] ~ i[, 2])$coefficients[2])
+```
+
+```{r Exercise 52}
+covi <- cov(iris[1:4])
+vari <- diag(covi)
+sdsi <- sqrt(vari)
+mnsi <- colMeans(iris[1:4])
+cvsi <- sdsi / mnsi
+```
+
+```{r Exercise 53}
+sdsi <- sqrt(diag(cov(iris[1:4])))
+sdpi <- outer(sdsi, sdsi)
+```
+
+```{r Exercise 54}
+cov(iris[1:4]) / sdpi
+```
+
+```{r Exercise 55}
+ifelse(upper.tri(cov(iris[1:4])), cor(iris[1:4]), cov(iris[1:4]))
+```
+
+```{r Exercise 56}
+
+dd <- as.matrix(iris[1:4])
+vd <- diag(10 ^ (0:3))
+
+speedtest <- sapply(1:5, function(i) {
+  
+  looptime <- system.time(
+    sapply(1:1000, function(x) mapply(x = 1:4, y = 10 ^ (0:3), 
+                                      FUN=function(x, y) iris[[x]] * y))
+  )["elapsed"]
+  
+  mattime1 <- system.time(
+    sapply(1:1000, function(x) as.matrix(iris[1:4]) %*% diag(10 ^ (0:3)))
+  )["elapsed"]  
+  
+  mattime2 <- system.time(
+    sapply(1:1000, function(x) dd %*% vd )
+  )["elapsed"]
+  
+  
+  t(c(myfun=looptime, mfun1=mattime1, mfun2=mattime2))
+  
+})
+```
+
+```{r Exercise 57}
+loop <- system.time(lapply(rep(20, 10000000), rnorm))
+
+cl1 <- makeCluster(3)
+parl <- system.time(parLapply(cl=cl1, X=rep(20, 1000000), fun=rnorm))
+stopCluster(cl1)
+
+parl2 <- system.time(mclapply(rep(20, 1000000), rnorm))
+```
+
+```{r Exercise 58}
+plot(iris[[1]], iris[[2]], ylim=c(2, 4.5),
+  xlab="sepal length (mm)", ylab="sepal width (mm)", 
+  pch=16, 
+  col=ifelse(iris[[5]]=="setosa", "blue", # use nested ifelse()
+             ifelse(iris[[5]]=="versicolor", "red", "purple")))
+
+# could use switch like this
+plot(iris[[1]], iris[[2]], ylim=c(2, 4.5),
+  xlab="sepal length (mm)", ylab="sepal width (mm)", 
+  pch=16, 
+  col=sapply(X=iris[[5]], FUN=switch, "blue", "red", "purple"))
+```
+
+```{r Exercise 59}
+plot(iris[[1]], iris[[2]], ylim=c(2, 4.5),
+  xlab="sepal length (mm)", ylab="sepal width (mm)", 
+  pch=16, 
+  col=sapply(X=iris[[5]], FUN=switch, "blue", "red", "purple"))
+
+legend(x=6.75, y=4.5, 
+       legend=c("setosa", "versicolor", "virginica"), # labels
+       pch=16, col=c("blue", "red", "purple"),
+       bty="n") # removes box
+```
+
+```{r Exercise 60-62}
+seps <- aggregate(iris$Sepal.Length, by=list(iris$Species), mean)
+barplot(seps[[2]], 
+        ylim=c(0, 8))
+
+seps2 <- aggregate(iris[1:4], by=list(iris$Species), mean)
+seps2 <- as.matrix(seps2[,2:5])
+bp1 <- barplot(seps2, beside=TRUE, ylim=c(0, 7))
+
+ses <- aggregate(iris[1:4], by=list(iris$Species), sd)
+ses2 <- c(ses[,2:5], recursive=TRUE)
+seps2 <- c(seps2)
+upper <- seps2 + ses2
+lower <- seps2 - ses2
+
+arrows(bp1, upper, bp1, lower, code=3, angle=90, length=0, lwd=1.5)
+```
+
+```{r Exercise 63}
+par(mfrow=c(1, 3))
+iris.l <- split(iris, f=iris$Species)
+sapply(iris.l, function(x) plot(x[[1]], x[[2]]))
+```
+
+```{r Exercise 64}
+id.set <- iris[iris$Species == "setosa", ]
+an2 <- lm(Sepal.Length ~ Sepal.Width, data=id.set)
+parms <- an2$coefficients
+names(parms) <- c("y.int", "slope")
+```
+
+```{r Exercise 65}
+plot(id.set$Sepal.Length ~ id.set$Sepal.Width,
+     pch=16, col="red", las=1,
+     xlim=c(0, 5), ylim=c(0, 6),
+     xlab="sepal width", ylab="sepal length")
+
+nd2 <- data.frame(Sepal.Width=seq(0, 5, length.out = 50))
+preds2 <- predict(an2, nd2)
+
+lines(x=nd2$Sepal.Width, y=preds, col="red")
+```
+```{r Exercise 69, eval=FALSE}
+id <- droplevels(iris[iris$Species != "versicolor", ])
+
+an6 <- lm(Sepal.Length ~ Sepal.Width * Species, data=id)
+summary(an6)
+
+contrasts(id$Species)
+
+id2 <- droplevels(iris[iris$Species == "setosa", ])
+
+an7 <- lm(Sepal.Length ~ Sepal.Width, data=id2)
+summary(an7)
+```

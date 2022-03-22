@@ -1,0 +1,56 @@
+---
+title: "Project Solutions"
+author: "Tim Farkas"
+date: "11/27/2017"
+output: html_document
+---
+
+```{r}
+sd <- read.csv("~/Dropbox/UNM R Course/sev_cover_1999-2017.csv", 
+               strip.white = TRUE)
+
+sd <- droplevels(sd[sd$cover > 0 , ]) # select only records with cover data
+
+#sd[sd$species==" BREUC2", "species"] <- "BREUC2" # remove BREUC2 w/ whitespace
+
+sd[sd$species=="ecfef3", "species"] <- "ECFEF3" # capitalize ecfef3
+
+csum <- aggregate(sd$cover, #summarize cover data
+                  by=list(sd$species, sd$year, sd$site, sd$season), 
+                  FUN=sum)
+names(csum) <- c("species", "year", "site", "season", "cover") # rename variables
+
+library(reshape2) # load reshape2 package
+
+fd <- dcast(csum, formula= ... ~ year, value.var="cover") # cast to wide format
+fd[is.na(fd)] <- 0 # replace NA with 0s
+
+fd$mean <- rowMeans(fd[, 4:22]) # add means column
+
+fd$sd <- sqrt(diag(cov(t(fd[, 4:22])))) # add sd column
+fd$cv <- fd$sd / fd$mean # add cv column
+
+spd <- read.csv("~/Dropbox/UNM R Course/sev_lter_plant_spp.csv") # load species info
+
+fd[, c("family", "genus", "spp")] <- NA # create species variables
+
+# fill speices info columns 
+fd[, c("family", "genus", "spp")] <- spd[match(fd$species, spd$spp), 
+                                         c("family", "genus", "species")]
+
+fd <- fd[, c(1, 26:28, 2:25)] # rearrange columns
+
+# give columns non-numeric variable names
+yn <- sapply(names(fd)[7:25], FUN=function(x) paste("y", x, sep=""), USE.NAMES = FALSE)
+names(fd)[7:25] <- yn
+
+fd <- droplevels(fd)
+fdnew <- fd
+
+# create new CSV file
+write.csv(fd, "~/Dropbox/UNM R Course/sev_cv_final.csv", row.names=FALSE)
+```
+
+
+
+

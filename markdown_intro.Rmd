@@ -1,0 +1,67 @@
+---
+title: "Introduction to R Markdown"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is an R Markdown document (.Rmd). Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents.  
+
+R Markdown is a system for taking and sharing notes and analyses, and is best read in HTML, where code is clearly distinguishable from notes. It is largely focused on content, not formatting, so give up now on making it look perfect. If you must have perfect formatting, go look up Sweave.  
+
+#### Installation
+R Markdown will require the installation of a few contributed packages. You may be prompted to install the when you first attempt to Knit a document. Accept the prompt. Alternatively, you can install the `rmarkdown` package manually with the following code: `install.packages("rmarkdown")`. Any packages on which `rmarkdown` depends should also be installed automatically. 
+
+If this is still not working for you, make sure your versions of Studio and R are up to date, restart your computer, and try again. If you still can't get Markdown to Knit a document, contact me.
+
+#### Usage
+
+1. Comments/Notes are the default in R Markdown -- just type stuff and you will be taking notes. 
+
+2. Text is automatically wrapped to your window, both in the RStudio text editor with .Rmd files, and with HTML files in Viewer or web browsers.
+
+3) A new line is created by adding two spaces before a line return. See lines 14 and 15 above. This is unecessary if your are using bulleted or numbered lists.
+
+4. To make lists, first create an empty line (see line 17 above), then begin each list element on a new line with a `*` or `-` for bullets and `1.` or `1)` for numbers. 
+    - use two tabs to indent list elements, either with bullets 
+    1. or numbers
+        - you can have as much indentatin as you wish
+        
+5. Make text *italics* by surrounding with single `*`, and **bold** with double
+
+6. Make inline, unevaluated R code by enclosing with single tick marks, eg `x <- 100`
+
+7. Make longer, evaluated R code "chunks" as below. Set `echo=FALSE` to supress the code and `results="hide"` to supress output. Chunks can be added with the **Insert** button above.
+
+Both code and output.  
+```{r}
+x <- 100; x
+```
+
+Output only.
+```{r, echo=FALSE}
+x <- 100; x
+```
+
+Code only.
+```{r, results="hide"}
+x <- 100; x
+```
+
+8. When you click the **Knit** button a document will be generated that includes both content (notes) as well as the output of any embedded R code chunks within the document.  
+
+9. Use the **Knit** dropdown arrow to select HTML, PDF, or Word. 
+
+10. Use the **Settings** dropdown to select "Preview in Viewer Pane" to preview HTML (only) in lower right window of RStudio.
+
+11. Markdown has lots of available functionality. Googling tends to work well for finding extra stuff. For more details on using R Markdown see <http://rmarkdown.rstudio.com>. 
+
+
+
+
+
+

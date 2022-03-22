@@ -1,0 +1,93 @@
+---
+title: "Week 7 Homework"
+author: "Tim Farkas"
+date: "10/16/2017"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+#knitr::opts_chunk$set(results = "hold")
+```
+
+**Instructions**: Below are problems similar to the exercises done in class relating to the all course content up to and including Week 7. For questions that ask you to produce code, please insert one or a couple code chunks (using Insert button in shortcuts bar above, or on Mac <kbd>CMD</kbd> + <kbd>OPT</kbd> + <kbd>I</kbd>, on PC <kbd>CTL</kbd> + <kbd>ALT</kbd> + <kbd>I</kbd>). 
+
+Put all code you want to execute inside a chunk. When you Knit your document, the code in chunks will be evaluated, and both the code and output will be printed. Any "inline" code (eg `x <- 10`) will not be evaluated, hence `x` in this case will not be created, and cannot be used by any downstream code. 
+
+Please Knit to Word and upload a DOC file to Blackboard.
+
+You can see more information about R Markdown in a Rmd file on Blackboard. 
+
+In this homework, some pieces of code will not Knit properly if not run in the same chunk. Specifically, when you create a plot in a chunk, any further code modifying that plot needs in be in the same chunk where the plot was initially called. Furthermore, during development and testing, you will have run the whole chunk at once for modifications to execute properly (line by line will fail). Finally, if you want to visualize a plot in the Plot tab, you will need to  run the code in the Console (highlight, then CTL + RTN).
+
+This will make some chunks rather lengthy, so please begin commenting your code by inserting a `#` on lines above the code text or after the code text on the same line. See Example Problem below. Any other comments that you think will be useful will be appreciated. Furthermore, please title your code chunks in the curly braces in the chunk header to indicate which problems are being addressed in each chunk. See the example below.
+
+**Example Problem**
+
+1. Create an integer vector `p` from 1 to 10 incrementing by 1. 
+```{r Problem 1}
+p <- 1:10 
+```
+2. Create an integer vector `prev` that reverses the elements of `p`
+```{r Problem 2}
+prev <- rev(p)
+```
+3. Given a vector `x`, make a vector `x2` for which each element is the square of the correponding element in `x`. 
+4. Make a scatterplot relating `x` to `x2`.
+5. Title the plot "Example Plot". 
+```{r Problems 3-5}
+# Problem E.3: Make Vectors.
+x <- 1:10; x2 <- x ^ 2 
+
+# Problem E.4: Create scatter plot of x against x2
+plot(x, x2)
+
+# Problem E.5. Add title to scatter plot
+title(main="Example Plot") # axis labels left as default
+```
+
+
+## **Preliminary**: 
+
+Clear all objects from your global environment.
+
+##### Data Import
+
+1. Import the plant height data and save to `pd`. 
+2. Remove any rows that have missing data. 
+3. Check the structure of the data, including its dimensions and column data types. 
+
+## **Problems**
+
+plant_height_data.csv has 60 records, where each record represents one plant, with 10 plants sampled at each of 6 sites. Half of the sites were fertilized twice per week after the first height measurement. Each plant was measured three times, one measurement per 10 days.
+
+##### 7.1. Indexing Review (Optional)
+
+Remember, you can extract elements of a data structure by passing three distinct data types to square brackets.
+
+* positions, eg `pd[c(1,3,5), ]`,
+* names, eg     `pd[ , c("m1", "m2", "m3")]`, or
+* logicals, eg  `pd[ , c(F, F, F, F, T, T, T)]`
+
+1. Extract a data frame `pd.m` from `pd` containing only the measurement variables `m1`, `m2`, and `m3`.
+2. Extract all rows from `pd.m` for which values of `m1` are greater than 5.  
+3. Extract all elements from `m2` for which values of `m1` are greater than 5.
+4. Extract all rows from `pd.m` for which plants were fertilized.  
+5. Make a histogram of `m1` values for which `m1` is less than 5 and `m2` is  less than 6.
+
+##### 7.2. Functions & The If/Else Construct
+
+1. Create the completely useless power function `pow()` that takes two numeric arguments, raises the first argument to the power of the second, and returns the result. Make the default for the exponent equal to 1. 
+2. Create the slightly more useful "integer power" function `ip()`, that takes two numeric arguments, raises the first to the power of the second, rounds the result down to the nearest integer, then returns that integer. See `?floor`.
+3. Modify the `ip()` function to take a third arguement `parts`, which defaults to `FALSE`, but that if `TRUE`, leads the function to return a named vector of length = 2 where the first element is the integer part of the result and second is the decimal part. Eg. If you raise 2 to the power of 2.5, the function should return the vector specified by: `c(integer=5, decimal=0.6569)`. 
+4. Make a function `min.max()` that takes a vector `x` and returns the minimumof `x` if the median is less than the mean, the maximum if the median is greater than the mean, and the mean if they are equal. 
+5. Create a function `sum.o()` that takes a vector `x` and returns the sum of every other element, starting with the first element. 
+6. Bonus: Modify `sum.o()` to add the sum from #5 to every other element, starting with the second, and return the new vector. 
+
+##### 7.3. The ifelse() Function
+
+1. Make a new column in `pd` named `m1.nom` (for "m1 nominal") with the levels "low" and "high", where "low" indicates less than or equal to the mean of `m1`, and "high" indicates greater than the mean of `m1`. Use the `ifelse()` function. 
+2. Do this two more times for `m2` and `m3`. 
+3. As it turns out, biomass measurements for `m3` were taken in inches at site "A", and centimeters everwhere else. Make a new column `m3.cor` ("corrected") that converts those measurements to centimeters (1 in = 2.54 cm).
+4. Bonus: Make a new column in `pd` named `m1.3` that splits `m1` into "low", "medium", and "high" levels, cutting the range of `m1` into thirds. 

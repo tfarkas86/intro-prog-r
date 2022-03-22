@@ -1,0 +1,29 @@
+---
+title: "R Programming Projects"
+author: "Tim Farkas"
+date: "11/25/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Project 1: The file sev_cover_1999-2017.csv contains ground cover and plant height measurements for around 150 plant species over 19 years of data collection in the Sevilleta Wildlife Refuge north of Socorro, NM. The data are heavily nested: There are between 1 and 73 vegetative observations ("obs") per 1-meter-squared "quadrat", between 1 and 4 quadrats per "plot", between 1 and 4 plots per "web", between 1 and 5 webs per "site", between 1 and 4 sites per "season", between 1 and 3 seasons per year, and 19 years. Whoof!
+
+Create a new data frame that summarizes plant cover for each species x site x season x year combination seperately, simply summing cover records across all other levels in the nested, spatial hierarchy. Orient the data so that each row is a unique species x site x season combination, and there are 19 columns of cover data -- one column for each year. There will be between 1 and 4 rows per species, because only some species will be represented at all four sites each season.
+
+Create new columns in the data that summarize cover measurements over the 19 years of data, including the 1) mean, 2) standard deviation, and 3) coefficient of variation.
+
+Additionally, use the file sev_lter_spp_list.csv to add the family, genus, and species names to each row. 
+
+Make your data frame look exactly like `fd` in sev_cv_final.RData. Save this object to your global environment with `load()` (no assignment necessary), then check that your data frame is exactly the same as `fd` with `identical()`.
+
+```{r}
+load("~/Dropbox/UNM R Course/sev_cv_final.RData")
+```
+
+Upload your RMD file to Blackboard.
+
+Hint: `aggregate()` is super-duper powerful / flexible. Look carefully at the help file. 
+
