@@ -5,4 +5,11 @@
 *.RData
 *.docx
 *.txt
-
+.Rhistory
+.Rproj*
+Markdown/
+Project Attempts/
+hw-attempts/
+hw*
+intro*
+sev*
